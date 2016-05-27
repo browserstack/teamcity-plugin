@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<teamcity-plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:schemas-jetbrains-com:teamcity-plugin-v1-xml">
+  <info>
+    <name>automate-teamcity</name>
+    <display-name>automate-teamcity</display-name>
+    <version>1.0</version>
+    <description>This plugin allows you to integrate with BrowserStack Automate.</description>
+
+    <!-- TODO: Add download URL -->
+    <download-url></download-url>
+
+    <email>support@browserstack.com</email>
+    <vendor>
+      <name>BrowserStack</name>
+      <url>https://www.browserstack.com</url>
+      <logo>https://www.browserstack.com/images/layout/browserstack-logo-600x315.png</logo>
+    </vendor>
+  </info>
+  <deployment use-separate-classloader="true" />
+</teamcity-plugin>
