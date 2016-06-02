@@ -21,6 +21,16 @@
       </pluginRepository>
   </pluginRepositories>
   <build>
+      <plugins>
+          <plugin>
+              <groupId>org.jetbrains.teamcity</groupId>
+              <artifactId>teamcity-sdk-maven-plugin</artifactId>
+              <version>0.2</version>
+              <configuration>
+                  <teamcityDir>/Users/shirish/repository/TeamCity-9.0.3</teamcityDir>
+              </configuration>
+          </plugin>
+      </plugins>
       <pluginManagement>
           <plugins>
               <plugin>
@@ -29,14 +39,6 @@
                   <configuration>
                       <source>1.6</source>
                       <target>1.6</target>
-                  </configuration>
-              </plugin>
-              <plugin>
-                  <groupId>org.jetbrains.teamcity</groupId>
-                  <artifactId>teamcity-sdk-maven-plugin</artifactId>
-                  <version>RELEASE</version>
-                  <configuration>
-                      <!-- <teamcityDir>/path/to/tc/distro</teamcityDir> -->
                   </configuration>
               </plugin>
           </plugins>
