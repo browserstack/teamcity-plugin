@@ -1,21 +1,25 @@
 package com.browserstack.automate.ci.teamcity;
 
 import com.browserstack.automate.ci.teamcity.BrowserStackParameters.EnvVars;
-import com.browserstack.local.Local;
-import jetbrains.buildServer.agent.*;
+import jetbrains.buildServer.agent.AgentBuildFeature;
+import jetbrains.buildServer.agent.AgentLifeCycleAdapter;
+import jetbrains.buildServer.agent.AgentLifeCycleListener;
+import jetbrains.buildServer.agent.AgentRunningBuild;
+import jetbrains.buildServer.agent.BuildFinishedStatus;
+import jetbrains.buildServer.agent.BuildProgressLogger;
+import jetbrains.buildServer.agent.BuildRunnerContext;
 import jetbrains.buildServer.util.EventDispatcher;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
 
     private boolean isEnabled;
 
-    private Local browserstackLocal;
+    private BrowserStackLocal browserstackLocal;
 
     private boolean isLocalRunning;
 
@@ -36,20 +40,18 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
         }
 
         BuildProgressLogger buildLogger = build.getBuildLogger();
-        browserstackLocal = new BrowserStackLocal(buildLogger);
-
         Map<String, String> config = buildFeature.getParameters();
-        if (config.containsKey(EnvVars.BROWSERSTACK_ACCESSKEY)) {
-            localIdentifier = newLocalIdentifier();
+        browserstackLocal = new BrowserStackLocal(buildLogger, config.get(BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS));
 
+        if (config.containsKey(EnvVars.BROWSERSTACK_ACCESSKEY)) {
             Map<String, String> localOptions = new HashMap<String, String>();
             localOptions.put("key", config.get(EnvVars.BROWSERSTACK_ACCESSKEY));
-            localOptions.put("localIdentifier", localIdentifier);
             buildLogger.message("Starting BrowserStack Local");
 
             try {
                 browserstackLocal.start(localOptions);
                 isLocalRunning = browserstackLocal.isRunning();
+                localIdentifier = browserstackLocal.getLocalIdentifier();
             } catch (Exception e) {
                 buildLogger.error(e.getMessage());
                 runner.getBuild().stopBuild(e.getMessage());
@@ -102,17 +104,19 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
         runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USER, config.get(EnvVars.BROWSERSTACK_USER));
         runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESSKEY, config.get(EnvVars.BROWSERSTACK_ACCESSKEY));
         runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_LOCAL, config.get(EnvVars.BROWSERSTACK_LOCAL));
-        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_LOCAL_IDENTIFIER, localIdentifier);
+
+        if (localIdentifier != null) {
+            runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_LOCAL_IDENTIFIER, localIdentifier);
+        }
 
         BuildProgressLogger buildLogger = runner.getBuild().getBuildLogger();
         buildLogger.message(EnvVars.BROWSERSTACK_USER + "=" + config.get(EnvVars.BROWSERSTACK_USER));
         buildLogger.message(EnvVars.BROWSERSTACK_ACCESSKEY + "=" + config.get(EnvVars.BROWSERSTACK_ACCESSKEY));
         buildLogger.message(EnvVars.BROWSERSTACK_LOCAL + "=true");
-        buildLogger.message(EnvVars.BROWSERSTACK_LOCAL_IDENTIFIER + "=" + localIdentifier);
-    }
 
-    private String newLocalIdentifier() {
-        return UUID.randomUUID().toString().replaceAll("\\-", "");
+        if (localIdentifier != null) {
+            buildLogger.message(EnvVars.BROWSERSTACK_LOCAL_IDENTIFIER + "=" + localIdentifier);
+        }
     }
 
     private void killLocal(final AgentRunningBuild build) {
