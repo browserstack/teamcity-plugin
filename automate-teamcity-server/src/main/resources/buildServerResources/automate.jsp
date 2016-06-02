@@ -6,8 +6,6 @@
 <%@ page import="com.browserstack.automate.ci.teamcity.BrowserStackParameters" %>
 <jsp:useBean id="tests" type="java.util.List" scope="request"/>
 
-<h1>Automate Results</h1>
-
 <c:if test="${not empty tests}">
     <table class="testList">
         <thead>
