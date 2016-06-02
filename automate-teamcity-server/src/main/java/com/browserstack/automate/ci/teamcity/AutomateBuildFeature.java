@@ -2,10 +2,14 @@ package com.browserstack.automate.ci.teamcity;
 
 import com.browserstack.automate.ci.teamcity.BrowserStackParameters.EnvVars;
 import jetbrains.buildServer.serverSide.BuildFeature;
+import jetbrains.buildServer.serverSide.SBuild;
+import jetbrains.buildServer.serverSide.SBuildFeatureDescriptor;
+import jetbrains.buildServer.serverSide.SRunningBuild;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class AutomateBuildFeature extends BuildFeature {
@@ -52,5 +56,15 @@ public class AutomateBuildFeature extends BuildFeature {
                 params.get(EnvVars.BROWSERSTACK_LOCAL).toLowerCase().equals("true");
 
         return "Local Enabled: " + (hasLocalEnabled ? "true" : "false");
+    }
+
+    public static SBuildFeatureDescriptor findFeatureDescriptor(SRunningBuild build) {
+        Collection<SBuildFeatureDescriptor> buildFeatures = build.getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
+        return (!buildFeatures.isEmpty()) ? buildFeatures.iterator().next() : null;
+    }
+
+    public static SBuildFeatureDescriptor findFeatureDescriptor(SBuild build) {
+        Collection<SBuildFeatureDescriptor> buildFeatures = build.getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
+        return (!buildFeatures.isEmpty()) ? buildFeatures.iterator().next() : null;
     }
 }

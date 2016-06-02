@@ -19,8 +19,14 @@
 
     <dependency>
       <groupId>com.browserstack</groupId>
-      <artifactId>automate-client-java</artifactId>
+      <artifactId>automate-ci-common</artifactId>
       <version>0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.browserstack</groupId>
+      <artifactId>automate-client-java</artifactId>
+      <version>0.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -51,4 +57,13 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <!-- BrowserStack Automate -->
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
+    <!-- /BrowserStack Automate -->
+  </repositories>
 </project>
