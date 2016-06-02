@@ -19,7 +19,7 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
 
     private boolean isEnabled;
 
-    private BrowserStackLocal browserstackLocal;
+    private TeamCityBrowserStackLocal browserstackLocal;
 
     private boolean isLocalRunning;
 
@@ -41,7 +41,7 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
 
         BuildProgressLogger buildLogger = build.getBuildLogger();
         Map<String, String> config = buildFeature.getParameters();
-        browserstackLocal = new BrowserStackLocal(buildLogger, config.get(BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS));
+        browserstackLocal = new TeamCityBrowserStackLocal(config.get(BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS), buildLogger);
 
         if (config.containsKey(EnvVars.BROWSERSTACK_ACCESSKEY)) {
             Map<String, String> localOptions = new HashMap<String, String>();
