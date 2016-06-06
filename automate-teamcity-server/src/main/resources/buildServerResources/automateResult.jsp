@@ -4,9 +4,15 @@
 <%@ taglib prefix="forms" tagdir="/WEB-INF/tags/forms" %>
 <%@include file="/include.jsp"%>
 <%@ page import="com.browserstack.automate.ci.teamcity.BrowserStackParameters" %>
-<jsp:useBean id="tests" type="java.util.List" scope="request"/>
+
+<style type="text/css">
+.automate-result {
+    background: url('//www.browserstack.com/images/layout/ajax-loader-main.gif') 50% 15% no-repeat;
+}
+</style>
 
 <c:if test="${not empty tests}">
+    <jsp:useBean id="tests" type="java.util.List" scope="request"/>
     <table class="testList">
         <thead>
             <tr>
@@ -20,7 +26,7 @@
                     <td class="test-status" style="text-align: left; vertical-align: top">${test.getChild("status").getText()}</td>
                     <td class="nameT" style="text-align: left; vertical-align: top">
                         ${test.getChild("package").getText()}. ${test.getChild("class").getText()}.
-                        <a class="session-link" data-session="${test.getChild("session").getText()}" href="#">
+                        <a class="session-link" data-session="${test.getChild("session").getText()}" href="<%= request.getAttribute("javax.servlet.forward.request_uri") %>?<%= request.getQueryString() %>&session=${test.getChild("session").getText()}">
                             ${test.getAttribute("name").getValue()}
                         </a>
                     </td>
@@ -30,7 +36,8 @@
      </table>
 
     <script type="text/javascript">
-    $j('.session-link').on("click", function (event) {
+    // disabled; to enable, rename class selector to .session-link
+    $j('.session-link1').on("click", function (event) {
          event.preventDefault();
 
          var el = $j(this);
@@ -47,12 +54,11 @@
                  success: function (res) {
                     if (res) {
                         $j('.automate-result').remove();
-                        el.after('<iframe class="automate-result" src="' + res.public_url + '" style="width: 100%; height: 800px"></iframe>');
+                        el.after('<iframe class="automate-result" src="' + res.public_url + '" frameborder="0" style="width: 100%; height: 800px; border: 0;"></iframe>');
                     }
                  },
                  error: function (xhr) {
                     if (xhr.responseJSON) {
-                        alert(JSON.stringify(xhr));
                         el.after('<div class="automate-result">' + xhr.responseJSON.error + '</div>');
                     }
                  },
@@ -63,4 +69,13 @@
          }
     });
     </script>
+</c:if>
+<c:if test="${not empty session}">
+    <c:if test="${not empty resultsUrl}">
+        <a href="${resultsUrl}">&lt; All Results</a><br/>
+    </c:if>
+    <iframe class="automate-result" src="${session.publicUrl}" frameborder="0" style="width: 100%; height: 800px; border: 0;"></iframe>
+</c:if>
+<c:if test="${not empty error}">
+    <h3>${error}</h3>
 </c:if>

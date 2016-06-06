@@ -101,7 +101,7 @@ public class AutomateSessionController extends BaseController {
         return result;
     }
 
-    private AutomateClient newAutomateClient(final SBuild build) {
+    public static AutomateClient newAutomateClient(final SBuild build) {
         SBuildFeatureDescriptor featureDescriptor = AutomateBuildFeature.findFeatureDescriptor(build);
         if (featureDescriptor != null) {
             Map<String, String> params = featureDescriptor.getParameters();
