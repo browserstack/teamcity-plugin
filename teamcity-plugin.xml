@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <teamcity-plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:schemas-jetbrains-com:teamcity-plugin-v1-xml">
   <info>
-    <name>automate-teamcity</name>
-    <display-name>automate-teamcity</display-name>
+    <name>browserstack-teamcity</name>
+    <display-name>browserstack-teamcity</display-name>
     <version>1.0</version>
-    <description>This plugin allows you to integrate with BrowserStack Automate.</description>
+    <description>This plugin allows you to integrate with BrowserStack.</description>
 
     <!-- TODO: Add download URL -->
     <download-url></download-url>
