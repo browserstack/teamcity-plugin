@@ -19,12 +19,6 @@
 
     <dependency>
       <groupId>com.browserstack</groupId>
-      <artifactId>automate-ci-common</artifactId>
-      <version>0.1-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.browserstack</groupId>
       <artifactId>automate-client-java</artifactId>
       <version>0.2-SNAPSHOT</version>
     </dependency>
