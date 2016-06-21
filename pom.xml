@@ -27,7 +27,7 @@
               <artifactId>teamcity-sdk-maven-plugin</artifactId>
               <version>0.2</version>
               <configuration>
-                  <teamcityDir>/Users/shirish/repository/TeamCity-9.0.3</teamcityDir>
+                  <teamcityDir>.teamcity/${teamcity-version}</teamcityDir>
               </configuration>
           </plugin>
       </plugins>
