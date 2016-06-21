@@ -4,11 +4,15 @@ import com.browserstack.automate.AutomateClient;
 import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.SessionNotFound;
 import jetbrains.buildServer.log.Loggers;
+import jetbrains.buildServer.serverSide.BuildStatistics;
+import jetbrains.buildServer.serverSide.BuildStatisticsOptions;
 import jetbrains.buildServer.serverSide.SBuild;
 import jetbrains.buildServer.serverSide.SBuildServer;
+import jetbrains.buildServer.serverSide.STestRun;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifact;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifacts;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifactsViewMode;
+import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.web.openapi.PagePlaces;
 import jetbrains.buildServer.web.openapi.PlaceId;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
@@ -16,15 +20,20 @@ import jetbrains.buildServer.web.openapi.ViewLogTab;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
+import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -77,9 +86,13 @@ public class AutomateResultsTab extends ViewLogTab {
             return false;
         }
 
-        BuildArtifacts buildArtifacts = build.getArtifacts(BuildArtifactsViewMode.VIEW_DEFAULT);
-        BuildArtifact buildArtifact = buildArtifacts.getArtifact(BrowserStackParameters.getArtifactPath());
-        return (buildArtifact != null);
+        List<File> reportFiles = new ArrayList<File>();
+        FileUtil.collectMatchedFiles(build.getArtifactsDirectory(),
+                Pattern.compile(FileUtil.convertAntToRegexp(BrowserStackParameters.ARTIFACT_LOCATION_PATTERN)),
+                reportFiles);
+
+        Loggers.SERVER.info("AutomateResultsTab.isAvailable: done: " + !reportFiles.isEmpty());
+        return !reportFiles.isEmpty();
     }
 
     private void fillModelSession(final String sessionId, final Map<String, Object> model,
@@ -110,32 +123,81 @@ public class AutomateResultsTab extends ViewLogTab {
     }
 
     private void fillModelSessionList(final Map<String, Object> model, final SBuild build) {
-        Loggers.SERVER.info("Rendering test list");
+        BuildArtifacts buildArtifacts = build.getArtifacts(BuildArtifactsViewMode.VIEW_HIDDEN_ONLY);
+        BuildStatistics buildStatistics = build.getBuildStatistics(BuildStatisticsOptions.ALL_TESTS_NO_DETAILS);
+        final Map<String, String> testStatusMap = processTestStatuses(buildStatistics.getAllTests());
 
-        BuildArtifacts buildArtifacts = build.getArtifacts(BuildArtifactsViewMode.VIEW_ALL);
-        BuildArtifact buildArtifact = buildArtifacts.getArtifact(BrowserStackParameters.getArtifactPath());
-        if (buildArtifact != null) {
-            InputStream inputStream = null;
+        final List<Element> testResults = new ArrayList<Element>();
+        buildArtifacts.iterateArtifacts(new BuildArtifacts.BuildArtifactsProcessor() {
+            @NotNull
+            @Override
+            public Continuation processBuildArtifact(@NotNull BuildArtifact artifact) {
+                // TODO: Fix logic of picking up files as artifacts
+                if (artifact.isFile() && artifact.getRelativePath().contains(BrowserStackParameters.BROWSERSTACK_ARTIFACT_DIR)) {
+                    InputStream inputStream = null;
 
-            try {
-                inputStream = buildArtifact.getInputStream();
-                String artifactData = IOUtils.toString(inputStream);
-                if (artifactData != null) {
-                    SAXBuilder builder = new SAXBuilder();
-                    Document document = builder.build(new ByteArrayInputStream(artifactData.getBytes()));
-                    model.put("tests", document.getRootElement().getChildren("test"));
+                    try {
+                        inputStream = artifact.getInputStream();
+                        List<Element> results = parseResultFile(inputStream);
+                        if (results != null) {
+                            for (Element elem : results) {
+                                String testCaseId = elem.getAttribute("id").getValue();
+                                if (testCaseId != null && testStatusMap.containsKey(testCaseId)) {
+                                    elem.setAttribute("status", testStatusMap.get(testCaseId));
+                                }
+                            }
+
+                            testResults.addAll(results);
+                        }
+                    } catch (IOException e) {
+                        model.put("error", e.getMessage());
+                    } catch (JDOMException e) {
+                        model.put("error", e.getMessage());
+                    } finally {
+                        IOUtils.closeQuietly(inputStream);
+                    }
                 }
-            } catch (IOException e) {
-                model.put("error", e.getMessage());
-            } catch (JDOMException e) {
-                model.put("error", e.getMessage());
-            } finally {
-                IOUtils.closeQuietly(inputStream);
+
+                return Continuation.CONTINUE;
+            }
+        });
+
+        Loggers.SERVER.info("testResults: " + testResults.size());
+        model.put("tests", testResults.isEmpty() ? Collections.emptyList() : testResults);
+    }
+
+    private static Map<String, String> processTestStatuses(final List<STestRun> allTests) {
+        Map<String, String> testStatusMap = new HashMap<String, String>();
+        Map<String, Long> testCaseIndices = new HashMap<String, Long>();
+        int testCount = 0;
+
+        for (STestRun testRun : allTests) {
+            testCount++;
+
+            String testCaseName = testRun.getTest().getName().getAsString();
+            Long testIndex = testCaseIndices.containsKey(testCaseName) ? testCaseIndices.get(testCaseName) : -1L;
+            testCaseIndices.put(testCaseName, ++testIndex);
+
+            String testId = String.format("%s{%d}", testCaseName, testIndex);
+            if (!testStatusMap.containsKey(testId)) {
+                testStatusMap.put(testId, testRun.getStatusText());
             }
         }
 
-        if (!model.containsKey("tests")) {
-            model.put("tests", Collections.emptyList());
+        testCaseIndices.clear();
+        Loggers.SERVER.info(testCount + " tests recorded");
+        return testStatusMap;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Element> parseResultFile(final InputStream inputStream) throws IOException, JDOMException {
+        String artifactData = IOUtils.toString(inputStream);
+        if (artifactData != null) {
+            SAXBuilder builder = new SAXBuilder();
+            Document document = builder.build(new ByteArrayInputStream(artifactData.getBytes()));
+            return document.getRootElement().getChildren("testcase");
         }
+
+        return null;
     }
 }

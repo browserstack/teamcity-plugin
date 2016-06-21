@@ -8,14 +8,21 @@ import jetbrains.buildServer.agent.AgentRunningBuild;
 import jetbrains.buildServer.agent.BuildFinishedStatus;
 import jetbrains.buildServer.agent.BuildProgressLogger;
 import jetbrains.buildServer.agent.BuildRunnerContext;
+import jetbrains.buildServer.agent.artifacts.ArtifactsWatcher;
 import jetbrains.buildServer.util.EventDispatcher;
+import jetbrains.buildServer.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
+    private static final String REPORT_FILE_PATTERN = "**/browserstack-reports/REPORT-*.xml";
 
     private boolean isEnabled;
 
@@ -27,7 +34,12 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
 
     private AgentBuildFeature buildFeature;
 
-    public BrowserStackLocalAgent(@NotNull EventDispatcher<AgentLifeCycleListener> eventDispatcher) {
+    @NotNull
+    private final ArtifactsWatcher artifactsWatcher;
+
+    public BrowserStackLocalAgent(@NotNull EventDispatcher<AgentLifeCycleListener> eventDispatcher,
+                                  @NotNull ArtifactsWatcher watcher) {
+        artifactsWatcher = watcher;
         eventDispatcher.addListener(this);
     }
 
@@ -73,8 +85,18 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
 
     @Override
     public void runnerFinished(@NotNull BuildRunnerContext runner, @NotNull BuildFinishedStatus status) {
+        AgentRunningBuild build = runner.getBuild();
         if (isEnabled) {
-            killLocal(runner.getBuild());
+            killLocal(build);
+        }
+
+        List<File> reportFiles = new ArrayList<File>();
+        FileUtil.collectMatchedFiles(build.getCheckoutDirectory(),
+                Pattern.compile(FileUtil.convertAntToRegexp(REPORT_FILE_PATTERN)),
+                reportFiles);
+
+        for (File reportFile : reportFiles) {
+            artifactsWatcher.addNewArtifactsPath(reportFile.getAbsolutePath() + "=>" + BrowserStackParameters.ARTIFACT_DIR);
         }
     }
 

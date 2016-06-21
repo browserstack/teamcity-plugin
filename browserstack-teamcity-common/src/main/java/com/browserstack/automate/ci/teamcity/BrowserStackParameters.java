@@ -24,12 +24,20 @@ public class BrowserStackParameters {
 
     public static final String SESSIONS_CONTROLLER_PATH = "/" + BrowserStackParameters.AUTOMATE_NAMESPACE + "/sessions.html";
 
-    public static final String ARTIFACT_DIR = ".browserstack";
+    public static final String BROWSERSTACK_ARTIFACT_DIR = ".browserstack";
+
+    public static final String ARTIFACT_LOCATION_PATTERN = "**/.browserstack/";
+
+    public static final String ARTIFACT_DIR = ".teamcity" + File.separator + BROWSERSTACK_ARTIFACT_DIR + File.separator;
 
     private BrowserStackParameters() {
     }
 
+    public static String getArtifactPath(String fileName) {
+        return ARTIFACT_DIR + File.separator + fileName;
+    }
+
     public static String getArtifactPath() {
-        return ARTIFACT_DIR + File.separator + ARTIFACT_FILE_NAME;
+        return getArtifactPath(ARTIFACT_FILE_NAME);
     }
 }
