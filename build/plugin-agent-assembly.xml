@@ -7,7 +7,7 @@
     </formats>
     <files>
         <file>
-            <source>../automate-teamcity-agent/teamcity-plugin.xml</source>
+            <source>../browserstack-teamcity-agent/teamcity-plugin.xml</source>
             <outputDirectory>/</outputDirectory>
         </file>
     </files>
@@ -15,8 +15,8 @@
         <moduleSet>
             <useAllReactorProjects>true</useAllReactorProjects>
             <includes>
-                <include>com.browserstack:automate-teamcity-agent</include>
-                <include>com.browserstack:automate-teamcity-common</include>
+                <include>com.browserstack:browserstack-teamcity-agent</include>
+                <include>com.browserstack:browserstack-teamcity-common</include>
             </includes>
             <binaries>
                 <outputDirectory>lib</outputDirectory>
