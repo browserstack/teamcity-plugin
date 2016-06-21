@@ -58,11 +58,6 @@ public class AutomateBuildFeature extends BuildFeature {
         return "Local Enabled: " + (hasLocalEnabled ? "true" : "false");
     }
 
-    public static SBuildFeatureDescriptor findFeatureDescriptor(SRunningBuild build) {
-        Collection<SBuildFeatureDescriptor> buildFeatures = build.getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
-        return (!buildFeatures.isEmpty()) ? buildFeatures.iterator().next() : null;
-    }
-
     public static SBuildFeatureDescriptor findFeatureDescriptor(SBuild build) {
         Collection<SBuildFeatureDescriptor> buildFeatures = build.getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
         return (!buildFeatures.isEmpty()) ? buildFeatures.iterator().next() : null;

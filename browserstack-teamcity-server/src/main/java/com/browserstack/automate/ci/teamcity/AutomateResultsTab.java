@@ -7,6 +7,7 @@ import jetbrains.buildServer.log.Loggers;
 import jetbrains.buildServer.serverSide.BuildStatistics;
 import jetbrains.buildServer.serverSide.BuildStatisticsOptions;
 import jetbrains.buildServer.serverSide.SBuild;
+import jetbrains.buildServer.serverSide.SBuildFeatureDescriptor;
 import jetbrains.buildServer.serverSide.SBuildServer;
 import jetbrains.buildServer.serverSide.STestRun;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifact;
@@ -97,7 +98,7 @@ public class AutomateResultsTab extends ViewLogTab {
 
     private void fillModelSession(final String sessionId, final Map<String, Object> model,
                                   final HttpServletRequest request, final SBuild build) {
-        AutomateClient automateClient = AutomateSessionController.newAutomateClient(build);
+        AutomateClient automateClient = newAutomateClient(build);
         if (automateClient != null) {
             try {
                 model.put("session", automateClient.getSession(sessionId));
@@ -196,6 +197,21 @@ public class AutomateResultsTab extends ViewLogTab {
             SAXBuilder builder = new SAXBuilder();
             Document document = builder.build(new ByteArrayInputStream(artifactData.getBytes()));
             return document.getRootElement().getChildren("testcase");
+        }
+
+        return null;
+    }
+
+    private static AutomateClient newAutomateClient(final SBuild build) {
+        SBuildFeatureDescriptor featureDescriptor = AutomateBuildFeature.findFeatureDescriptor(build);
+        if (featureDescriptor != null) {
+            Map<String, String> params = featureDescriptor.getParameters();
+            String username = params.get(BrowserStackParameters.EnvVars.BROWSERSTACK_USER);
+            String accessKey = params.get(BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESSKEY);
+
+            if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(accessKey)) {
+                return new AutomateClient(username, accessKey);
+            }
         }
 
         return null;

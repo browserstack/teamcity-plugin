@@ -5,8 +5,6 @@
        default-autowire="constructor">
 
     <bean id="AutomateBuildFeature" class="com.browserstack.automate.ci.teamcity.AutomateBuildFeature"/>
-    <bean id="AutomateBuildServerAdapter" class="com.browserstack.automate.ci.teamcity.AutomateBuildServerAdapter"/>
-    <bean id="AutomateSessionController" class="com.browserstack.automate.ci.teamcity.AutomateSessionController"/>
     <bean id="AutomateResultsTab" class="com.browserstack.automate.ci.teamcity.AutomateResultsTab"/>
     <bean id="AutomateSessionLink" class="com.browserstack.automate.ci.teamcity.AutomateSessionLink"/>
 </beans>

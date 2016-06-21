@@ -1,6 +1,5 @@
 package com.browserstack.automate.ci.teamcity;
 
-import com.browserstack.automate.ci.common.AutomateTestCase;
 import jetbrains.buildServer.log.Loggers;
 import jetbrains.buildServer.serverSide.SBuild;
 import jetbrains.buildServer.serverSide.STest;
@@ -122,34 +121,6 @@ public class AutomateSessionLink extends SimplePageExtension {
             throw new IOException(e.getMessage());
         } finally {
             IOUtils.closeQuietly(inputStream);
-        }
-
-        return findSessionId(testRun.getFullText());
-    }
-
-    private static String findSessionId(final String testOutput) {
-        if (testOutput != null) {
-            String[] testOutputLines = testOutput.split("(\\r)*\\n");
-
-            for (String line : testOutputLines) {
-                AutomateTestCase automateTestCase = AutomateTestCase.parse(line);
-                if (automateTestCase != null) {
-                    /*
-                    String resultUrl = request.getRequestURI();
-                    if (resultUrl != null) {
-                        resultUrl += "?" + request.getQueryString()
-                                .replaceAll("&tab=[^&]+", "&tab=" + BrowserStackParameters.AUTOMATE_NAMESPACE);
-                        resultUrl += "&session=" + automateTestCase.sessionId;
-                        model.put("resultUrl", resultUrl);
-                    }
-                    */
-                    // http://localhost:8111/viewLog.html?buildId=95&buildTypeId=AutomateJunitCiSample2_CiSample2&tab=buildResultsDiv
-                    // http://localhost:8111/change/testDetails.html?testNameId=821971475507187665&builds=95.&projectId=AutomateJunitCiSample2&session=c8928d782f6aed23f365ad3e5d0d62483a5bb3e2
-                    // http://localhost:8111/viewLog.html?buildId=95&buildTypeId=AutomateJunitCiSample2_CiSample2&tab=automate-results&session=c8928d782f6aed23f365ad3e5d0d62483a5bb3e2
-                    Loggers.SERVER.info("automateTestCase: " + automateTestCase.sessionId);
-                    return automateTestCase.sessionId;
-                }
-            }
         }
 
         return null;

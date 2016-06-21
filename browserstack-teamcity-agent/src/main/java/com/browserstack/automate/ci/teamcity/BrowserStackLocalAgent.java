@@ -143,7 +143,7 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
     }
 
     private static String getBuildId(final BuildRunnerContext runner) {
-        return runner.getBuild().getBuildTypeId() +
+        return runner.getBuild().getBuildTypeName() +
                 "-" +
                 runner.getBuild().getBuildId() +
                 "-" +
