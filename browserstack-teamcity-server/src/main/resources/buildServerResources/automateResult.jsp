@@ -13,12 +13,12 @@
 
 <c:if test="${not empty tests}">
     <jsp:useBean id="tests" type="java.util.List" scope="request"/>
-    <h3>Selenium/JSTest Results</h3>
+    <h2>Selenium/JSTest Results</h2><br/>
     <table class="testList">
         <thead>
             <tr>
                 <th class="test-status" style="text-align: left">Status</th>
-                <th style="text-align: left; vertical-align: top">Test</th>
+                <th style="text-align: left; vertical-align: top">Test name</th>
             </tr>
         </thead>
         <tbody>
@@ -73,9 +73,10 @@
 </c:if>
 <c:if test="${not empty session}">
     <c:if test="${not empty resultsUrl}">
-        <a href="${resultsUrl}">Back to test results</a><br/>
+        <a href="${resultsUrl}">Back to test results</a>
+        <a href="${session.browserUrl}" target="_blank" style="margin-left: 20px; float: right;">View this on BrowserStack Automate Dashboard</a><br/>
     </c:if>
-    <a href="${session.browserUrl}" target="_blank">View this on BrowserStack Automate Dashboard</a><br/>
+    <br/>
     <iframe class="automate-result" src="${session.publicUrl}" frameborder="0" style="width: 100%; height: 800px; border: 1px solid #000;"></iframe>
 </c:if>
 <c:if test="${not empty error}">
