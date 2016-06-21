@@ -24,9 +24,9 @@
         <tbody>
             <c:forEach items="${tests}" var="test">
                 <tr>
-                    <td class="test-status" style="text-align: left; vertical-align: top">${test.getChild("status").getText()}</td>
+                    <td class="test-status" style="text-align: left; vertical-align: top">${test.getAttribute("status").getValue()}</td>
                     <td class="nameT" style="text-align: left; vertical-align: top">
-                        ${test.getChild("package").getText()}. ${test.getChild("class").getText()}.
+                        ${test.getAttribute("package").getValue()}. ${test.getAttribute("class").getValue()}.
                         <a class="session-link" data-session="${test.getChild("session").getText()}" href="<%= request.getAttribute("javax.servlet.forward.request_uri") %>?<%= request.getQueryString() %>&session=${test.getChild("session").getText()}">
                             ${test.getAttribute("name").getValue()}
                         </a>
