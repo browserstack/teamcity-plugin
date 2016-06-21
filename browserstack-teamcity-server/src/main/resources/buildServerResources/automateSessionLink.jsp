@@ -5,27 +5,30 @@
 <%@include file="/include.jsp"%>
 <%@ page import="com.browserstack.automate.ci.teamcity.BrowserStackParameters" %>
 
-<div style="padding: 10;">
-    <h3>BrowserStack</h3>
-    <c:if test="${not empty session}">
+<c:if test="${not empty session}">
+    <div style="padding: 10;">
+        <h3>BrowserStack</h3>
         <a class="session-link" href="#" target="_self">View BrowserStack report of this test</a>
-    </c:if>
-    <c:if test="${not empty error}">
-        <h3>${error}</h3>
-    </c:if>
 
-    <script>
-    <!-- JSP request page: /change/testDetails.html -->
+        <script>
+        <!-- JSP request page: /change/testDetails.html -->
 
-    $j(function () {
-        $j('.session-link').each(function () {
-            var currentUrl = window.location.href.replace(/([&|\?])tab=[^&]+/, '$1tab=<%= BrowserStackParameters.AUTOMATE_NAMESPACE %>');
-            if (currentUrl.indexOf('automate-result') !== -1) {
-                currentUrl += '&session=${session}'
-                $j(this).attr('href', currentUrl);
-            }
+        $j(function () {
+            $j('.session-link').each(function () {
+                var currentUrl = window.location.href.replace(/([&|\?])tab=[^&]+/, '$1tab=<%= BrowserStackParameters.AUTOMATE_NAMESPACE %>');
+                if (currentUrl.indexOf('automate-result') !== -1) {
+                    currentUrl += '&session=${session}'
+                    $j(this).attr('href', currentUrl);
+                }
+            });
         });
-    });
 
-    </script>
-</div>
+        </script>
+    </div>
+</c:if>
+<c:if test="${not empty error}">
+    <div style="padding: 10;">
+        <h3>BrowserStack</h3>
+        <p>${error}</p>
+    </div>
+</c:if>
