@@ -105,24 +105,27 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
         runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESSKEY, config.get(EnvVars.BROWSERSTACK_ACCESSKEY));
         runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_LOCAL, config.get(EnvVars.BROWSERSTACK_LOCAL));
 
-        if (localIdentifier != null) {
-            runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_LOCAL_IDENTIFIER, localIdentifier);
-        }
-
         BuildProgressLogger buildLogger = runner.getBuild().getBuildLogger();
         buildLogger.message(EnvVars.BROWSERSTACK_USER + "=" + config.get(EnvVars.BROWSERSTACK_USER));
         buildLogger.message(EnvVars.BROWSERSTACK_ACCESSKEY + "=" + config.get(EnvVars.BROWSERSTACK_ACCESSKEY));
-        buildLogger.message(EnvVars.BROWSERSTACK_LOCAL + "=true");
+        buildLogger.message(EnvVars.BROWSERSTACK_LOCAL + "=" + config.get(EnvVars.BROWSERSTACK_LOCAL));
 
         if (localIdentifier != null) {
+            runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_LOCAL_IDENTIFIER, localIdentifier);
             buildLogger.message(EnvVars.BROWSERSTACK_LOCAL_IDENTIFIER + "=" + localIdentifier);
         }
 
-        String buildId = System.getProperty("teamcity.build.id", "");
-        if (!buildId.isEmpty()) {
-            runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_BUILD, config.get(EnvVars.BROWSERSTACK_BUILD));
-            buildLogger.message(EnvVars.BROWSERSTACK_BUILD + "=" + buildId);
-        }
+        String buildId = getBuildId(runner);
+        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_BUILD, buildId);
+        buildLogger.message(EnvVars.BROWSERSTACK_BUILD + "=" + buildId);
+    }
+
+    private static String getBuildId(final BuildRunnerContext runner) {
+        return runner.getBuild().getBuildTypeId() +
+                "-" +
+                runner.getBuild().getBuildId() +
+                "-" +
+                runner.getBuild().getBuildNumber();
     }
 
     private void killLocal(final AgentRunningBuild build) {
