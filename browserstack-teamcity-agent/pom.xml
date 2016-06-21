@@ -11,15 +11,15 @@
   <dependencies>
     <dependency>
       <groupId>com.browserstack</groupId>
-      <artifactId>automate-ci-common</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <artifactId>browserstack-teamcity-common</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>com.browserstack</groupId>
-      <artifactId>browserstack-teamcity-common</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <scope>compile</scope>
+      <artifactId>browserstack-local-java</artifactId>
+      <version>0.3.0</version>
     </dependency>
 
     <dependency>
