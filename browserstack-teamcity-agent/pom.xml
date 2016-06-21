@@ -17,12 +17,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.browserstack</groupId>
-      <artifactId>browserstack-local-java</artifactId>
-      <version>0.3.0</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.jetbrains.teamcity</groupId>
       <artifactId>agent-api</artifactId>
       <version>${teamcity-version}</version>
