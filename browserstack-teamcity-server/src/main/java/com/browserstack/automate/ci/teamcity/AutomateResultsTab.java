@@ -13,6 +13,7 @@ import jetbrains.buildServer.serverSide.STestRun;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifact;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifacts;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifactsViewMode;
+import jetbrains.buildServer.tests.TestName;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.web.openapi.PagePlaces;
 import jetbrains.buildServer.web.openapi.PlaceId;
@@ -45,6 +46,8 @@ import java.util.regex.Pattern;
 public class AutomateResultsTab extends ViewLogTab {
 
     private static final String TAB_TITLE = "BrowserStack";
+
+    private static final String PACKAGE_DEFAULT = "(root)";
 
     private static final Pattern PATTERN_PARAM_SESSION = Pattern.compile("&session=.*");
 
@@ -126,7 +129,7 @@ public class AutomateResultsTab extends ViewLogTab {
     private void fillModelSessionList(final Map<String, Object> model, final SBuild build) {
         BuildArtifacts buildArtifacts = build.getArtifacts(BuildArtifactsViewMode.VIEW_HIDDEN_ONLY);
         BuildStatistics buildStatistics = build.getBuildStatistics(BuildStatisticsOptions.ALL_TESTS_NO_DETAILS);
-        final Map<String, String> testStatusMap = processTestStatuses(buildStatistics.getAllTests());
+        final Map<String, STestRun> testResultMap = processTestResults(buildStatistics.getAllTests());
 
         final List<Element> testResults = new ArrayList<Element>();
         buildArtifacts.iterateArtifacts(new BuildArtifacts.BuildArtifactsProcessor() {
@@ -143,12 +146,15 @@ public class AutomateResultsTab extends ViewLogTab {
                         if (results != null) {
                             for (Element elem : results) {
                                 String testCaseId = elem.getAttribute("id").getValue();
-                                if (testCaseId != null && testStatusMap.containsKey(testCaseId)) {
-                                    elem.setAttribute("status", testStatusMap.get(testCaseId));
+                                if (testCaseId != null && testResultMap.containsKey(testCaseId)) {
+                                    STestRun testRun = testResultMap.get(testCaseId);
+                                    elem.setAttribute("status", testRun.getStatusText());
+
+                                    // Use test name as recorded by Teamcity's result parser
+                                    elem.setAttribute("testname", testRun.getTest().getName().getTestNameWithParameters());
+                                    testResults.add(elem);
                                 }
                             }
-
-                            testResults.addAll(results);
                         }
                     } catch (IOException e) {
                         model.put("error", e.getMessage());
@@ -167,27 +173,34 @@ public class AutomateResultsTab extends ViewLogTab {
         model.put("tests", testResults.isEmpty() ? Collections.emptyList() : testResults);
     }
 
-    private static Map<String, String> processTestStatuses(final List<STestRun> allTests) {
-        Map<String, String> testStatusMap = new HashMap<String, String>();
+    private static Map<String, STestRun> processTestResults(final List<STestRun> allTests) {
+        Map<String, STestRun> testStatusMap = new HashMap<String, STestRun>();
         Map<String, Long> testCaseIndices = new HashMap<String, Long>();
         int testCount = 0;
 
         for (STestRun testRun : allTests) {
             testCount++;
 
-            String testCaseName = testRun.getTest().getName().getAsString();
+            String testCaseName = getTestName(testRun);
             Long testIndex = testCaseIndices.containsKey(testCaseName) ? testCaseIndices.get(testCaseName) : -1L;
             testCaseIndices.put(testCaseName, ++testIndex);
 
             String testId = String.format("%s{%d}", testCaseName, testIndex);
             if (!testStatusMap.containsKey(testId)) {
-                testStatusMap.put(testId, testRun.getStatusText());
+                testStatusMap.put(testId, testRun);
+                Loggers.SERVER.info("put >> " + testId + " | " + testRun.getStatusText());
             }
         }
 
         testCaseIndices.clear();
         Loggers.SERVER.info(testCount + " tests recorded");
         return testStatusMap;
+    }
+
+    private static String getTestName(final STestRun testRun) {
+        TestName testName = testRun.getTest().getName();
+        String packageName = testName.hasPackage() ? testName.getPackageName() : PACKAGE_DEFAULT;
+        return String.format("%s.%s.%s", packageName, testName.getClassName(), testName.getTestMethodName());
     }
 
     @SuppressWarnings("unchecked")

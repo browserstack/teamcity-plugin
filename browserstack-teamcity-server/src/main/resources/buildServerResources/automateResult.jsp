@@ -28,7 +28,7 @@
                     <td class="nameT" style="text-align: left; vertical-align: top">
                         ${test.getAttribute("package").getValue()}. ${test.getAttribute("class").getValue()}.
                         <a class="session-link" data-session="${test.getChild("session").getText()}" href="<%= request.getAttribute("javax.servlet.forward.request_uri") %>?<%= request.getQueryString() %>&session=${test.getChild("session").getText()}">
-                            ${test.getAttribute("name").getValue()}
+                            ${test.getAttribute("testname").getValue()}
                         </a>
                     </td>
                 </tr>
