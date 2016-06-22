@@ -1,6 +1,8 @@
-package com.browserstack.automate.ci.teamcity;
+package com.browserstack.automate.ci.teamcity.ui;
 
 import com.browserstack.automate.AutomateClient;
+import com.browserstack.automate.ci.teamcity.BrowserStackParameters;
+import com.browserstack.automate.ci.teamcity.config.AutomateBuildFeature;
 import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.SessionNotFound;
 import jetbrains.buildServer.log.Loggers;

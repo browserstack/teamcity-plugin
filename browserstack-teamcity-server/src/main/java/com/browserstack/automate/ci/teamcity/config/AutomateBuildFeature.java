@@ -1,5 +1,6 @@
-package com.browserstack.automate.ci.teamcity;
+package com.browserstack.automate.ci.teamcity.config;
 
+import com.browserstack.automate.ci.teamcity.BrowserStackParameters;
 import com.browserstack.automate.ci.teamcity.BrowserStackParameters.EnvVars;
 import jetbrains.buildServer.serverSide.BuildFeature;
 import jetbrains.buildServer.serverSide.SBuild;

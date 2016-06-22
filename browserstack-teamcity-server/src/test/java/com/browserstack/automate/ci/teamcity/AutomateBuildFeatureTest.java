@@ -1,5 +1,6 @@
 package com.browserstack.automate.ci.teamcity;
 
+import com.browserstack.automate.ci.teamcity.config.AutomateBuildFeature;
 import org.jetbrains.annotations.NotNull;
 import org.jmock.Expectations;
 import org.testng.Assert;

@@ -1,5 +1,6 @@
-package com.browserstack.automate.ci.teamcity;
+package com.browserstack.automate.ci.teamcity.ui;
 
+import com.browserstack.automate.ci.teamcity.BrowserStackParameters;
 import jetbrains.buildServer.log.Loggers;
 import jetbrains.buildServer.serverSide.SBuild;
 import jetbrains.buildServer.serverSide.STest;
