@@ -3,6 +3,7 @@ package com.browserstack.automate.ci.teamcity.ui;
 import com.browserstack.automate.AutomateClient;
 import com.browserstack.automate.ci.teamcity.BrowserStackParameters;
 import com.browserstack.automate.ci.teamcity.config.AutomateBuildFeature;
+import com.browserstack.automate.ci.teamcity.util.ParserUtil;
 import com.browserstack.automate.exception.AutomateException;
 import com.browserstack.automate.exception.SessionNotFound;
 import jetbrains.buildServer.log.Loggers;
@@ -15,7 +16,6 @@ import jetbrains.buildServer.serverSide.STestRun;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifact;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifacts;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifactsViewMode;
-import jetbrains.buildServer.tests.TestName;
 import jetbrains.buildServer.util.FileUtil;
 import jetbrains.buildServer.web.openapi.PagePlaces;
 import jetbrains.buildServer.web.openapi.PlaceId;
@@ -23,14 +23,11 @@ import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import jetbrains.buildServer.web.openapi.ViewLogTab;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,8 +45,6 @@ import java.util.regex.Pattern;
 public class AutomateResultsTab extends ViewLogTab {
 
     private static final String TAB_TITLE = "BrowserStack";
-
-    private static final String PACKAGE_DEFAULT = "(root)";
 
     private static final Pattern PATTERN_PARAM_SESSION = Pattern.compile("&session=.*");
 
@@ -131,7 +126,7 @@ public class AutomateResultsTab extends ViewLogTab {
     private void fillModelSessionList(final Map<String, Object> model, final SBuild build) {
         BuildArtifacts buildArtifacts = build.getArtifacts(BuildArtifactsViewMode.VIEW_HIDDEN_ONLY);
         BuildStatistics buildStatistics = build.getBuildStatistics(BuildStatisticsOptions.ALL_TESTS_NO_DETAILS);
-        final Map<String, STestRun> testResultMap = processTestResults(buildStatistics.getAllTests());
+        final Map<String, STestRun> testResultMap = ParserUtil.processTestResults(buildStatistics.getAllTests());
 
         final List<Element> testResults = new ArrayList<Element>();
         buildArtifacts.iterateArtifacts(new BuildArtifacts.BuildArtifactsProcessor() {
@@ -144,7 +139,7 @@ public class AutomateResultsTab extends ViewLogTab {
 
                     try {
                         inputStream = artifact.getInputStream();
-                        List<Element> results = parseResultFile(inputStream);
+                        List<Element> results = ParserUtil.parseResultFile(inputStream);
                         if (results != null) {
                             for (Element elem : results) {
                                 String testCaseId = elem.getAttribute("id").getValue();
@@ -171,53 +166,10 @@ public class AutomateResultsTab extends ViewLogTab {
             }
         });
 
-        Loggers.SERVER.info("testResults: " + testResults.size());
         model.put("tests", testResults.isEmpty() ? Collections.emptyList() : testResults);
     }
 
-    private static Map<String, STestRun> processTestResults(final List<STestRun> allTests) {
-        Map<String, STestRun> testStatusMap = new HashMap<String, STestRun>();
-        Map<String, Long> testCaseIndices = new HashMap<String, Long>();
-        int testCount = 0;
-
-        for (STestRun testRun : allTests) {
-            testCount++;
-
-            String testCaseName = getTestName(testRun);
-            Long testIndex = testCaseIndices.containsKey(testCaseName) ? testCaseIndices.get(testCaseName) : -1L;
-            testCaseIndices.put(testCaseName, ++testIndex);
-
-            String testId = String.format("%s{%d}", testCaseName, testIndex);
-            if (!testStatusMap.containsKey(testId)) {
-                testStatusMap.put(testId, testRun);
-                Loggers.SERVER.info("put >> " + testId + " | " + testRun.getStatusText());
-            }
-        }
-
-        testCaseIndices.clear();
-        Loggers.SERVER.info(testCount + " tests recorded");
-        return testStatusMap;
-    }
-
-    private static String getTestName(final STestRun testRun) {
-        TestName testName = testRun.getTest().getName();
-        String packageName = testName.hasPackage() ? testName.getPackageName() : PACKAGE_DEFAULT;
-        return String.format("%s.%s.%s", packageName, testName.getClassName(), testName.getTestMethodName());
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<Element> parseResultFile(final InputStream inputStream) throws IOException, JDOMException {
-        String artifactData = IOUtils.toString(inputStream);
-        if (artifactData != null) {
-            SAXBuilder builder = new SAXBuilder();
-            Document document = builder.build(new ByteArrayInputStream(artifactData.getBytes()));
-            return document.getRootElement().getChildren("testcase");
-        }
-
-        return null;
-    }
-
-    private static AutomateClient newAutomateClient(final SBuild build) {
+    public static AutomateClient newAutomateClient(final SBuild build) {
         SBuildFeatureDescriptor featureDescriptor = AutomateBuildFeature.findFeatureDescriptor(build);
         if (featureDescriptor != null) {
             Map<String, String> params = featureDescriptor.getParameters();

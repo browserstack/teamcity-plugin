@@ -1,8 +1,8 @@
 package com.browserstack.automate.ci.teamcity.ui;
 
 import com.browserstack.automate.ci.teamcity.BrowserStackParameters;
+import com.browserstack.automate.ci.teamcity.util.ParserUtil;
 import jetbrains.buildServer.log.Loggers;
-import jetbrains.buildServer.serverSide.SBuild;
 import jetbrains.buildServer.serverSide.STest;
 import jetbrains.buildServer.serverSide.STestRun;
 import jetbrains.buildServer.serverSide.artifacts.BuildArtifact;
@@ -15,14 +15,10 @@ import jetbrains.buildServer.web.openapi.PositionConstraint;
 import jetbrains.buildServer.web.openapi.SimplePageExtension;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -42,8 +38,6 @@ public class AutomateSessionLink extends SimplePageExtension {
         setIncludeUrl(pluginDescriptor.getPluginResourcesPath("automateSessionLink.jsp"));
         setPluginName(BrowserStackParameters.AUTOMATE_NAMESPACE);
         register();
-
-        Loggers.SERVER.info("AutomateSessionLink");
     }
 
     @Override
@@ -76,54 +70,54 @@ public class AutomateSessionLink extends SimplePageExtension {
                 }
             }
         }
-
-        model.put("pgClazz", this.getClass().getSimpleName());
-        model.put("pgPlace", this.getPlaceId().toString());
     }
 
     @Override
     public boolean isAvailable(@NotNull final HttpServletRequest request) {
-        Loggers.SERVER.info("AutomateSessionLink.isAvailable");
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     private static String findSessionId(final STestRun testRun) throws IOException {
-        SBuild build = testRun.getBuild();
-        BuildArtifacts buildArtifacts = build.getArtifacts(BuildArtifactsViewMode.VIEW_ALL);
-        BuildArtifact buildArtifact = buildArtifacts.getArtifact(BrowserStackParameters.getArtifactPath());
-        if (buildArtifact == null) {
-            throw new IOException("Failed to fetch build artifact");
-        }
+        String testNameFull = ParserUtil.getTestName(testRun);
+        String testParams = testRun.getTest().getName().getParameters();
+        final String testId = String.format("%s{%s}", testNameFull, testParams);
 
-        InputStream inputStream = null;
+        BuildArtifacts buildArtifacts = testRun.getBuild().getArtifacts(BuildArtifactsViewMode.VIEW_HIDDEN_ONLY);
+        final String[] sessions = new String[]{null};
 
-        try {
-            inputStream = buildArtifact.getInputStream();
-            String artifactData = IOUtils.toString(inputStream);
-            if (artifactData == null) {
-                throw new IOException("Failed to read build artifact");
-            }
+        buildArtifacts.iterateArtifacts(new BuildArtifacts.BuildArtifactsProcessor() {
+            @NotNull
+            @Override
+            public Continuation processBuildArtifact(@NotNull BuildArtifact artifact) {
+                // TODO: Fix logic of picking up files as artifacts
+                if (artifact.isFile() && artifact.getRelativePath().contains(BrowserStackParameters.BROWSERSTACK_ARTIFACT_DIR)) {
+                    InputStream inputStream = null;
 
-            SAXBuilder builder = new SAXBuilder();
-            Document document = builder.build(new ByteArrayInputStream(artifactData.getBytes()));
-
-            @SuppressWarnings("unchecked")
-            List<Element> testElementList = document.getRootElement().getChildren("test");
-            String testName = testRun.getTest().getName().getAsString();
-            for (Element el : testElementList) {
-                Loggers.SERVER.info("Compare: " + el.getAttribute("id").getValue() + " / " + testName);
-
-                if (el.getAttribute("id").getValue().equals(testName)) {
-                    Loggers.SERVER.info("Matched: " + el.getAttribute("id").getValue() + " / " + testName);
-                    return el.getChild("session").getValue();
+                    try {
+                        inputStream = artifact.getInputStream();
+                        List<Element> elements = ParserUtil.parseResultFile(inputStream);
+                        if (elements != null) {
+                            for (Element elem : elements) {
+                                if (elem.getAttribute("id") != null && testId.equals(elem.getAttribute("id").getValue())) {
+                                    if (elem.getChild("session") != null) {
+                                        sessions[0] = elem.getChild("session").getText();
+                                        return Continuation.BREAK;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        Loggers.SERVER.warn("Failed to parse artifact: " + e.getMessage());
+                    } finally {
+                        IOUtils.closeQuietly(inputStream);
+                    }
                 }
-            }
-        } catch (JDOMException e) {
-            throw new IOException(e.getMessage());
-        } finally {
-            IOUtils.closeQuietly(inputStream);
-        }
 
-        return null;
+                return Continuation.CONTINUE;
+            }
+        });
+
+        return sessions[0];
     }
 }
