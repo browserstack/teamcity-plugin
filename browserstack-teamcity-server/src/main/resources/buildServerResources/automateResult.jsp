@@ -28,48 +28,13 @@
                     <td class="nameT" style="text-align: left; vertical-align: top">
                         ${test.getAttribute("package").getValue()}. ${test.getAttribute("class").getValue()}.
                         <a class="session-link" data-session="${test.getChild("session").getText()}" href="<%= request.getAttribute("javax.servlet.forward.request_uri") %>?<%= request.getQueryString() %>&session=${test.getChild("session").getText()}">
-                            ${test.getAttribute("name").getValue()}
+                            ${test.getAttribute("testname").getValue()}
                         </a>
                     </td>
                 </tr>
             </c:forEach>
         </tbody>
      </table>
-
-    <script type="text/javascript">
-    // disabled; to enable, rename class selector to .session-link
-    $j('.session-link1').on("click", function (event) {
-         event.preventDefault();
-
-         var el = $j(this);
-         var resultFrame = el.next('.automate-result');
-         if (resultFrame && resultFrame.length) {
-              resultFrame.remove();
-         } else {
-             el.after('<div class="automate-result-loading">Loading...</div>');
-
-             $j.ajax({
-                 url: '<%= BrowserStackParameters.SESSIONS_CONTROLLER_PATH %>?session=' + el.data("session") + '&<%= request.getQueryString() %>',
-                 cache: false,
-                 dataType: 'json',
-                 success: function (res) {
-                    if (res) {
-                        $j('.automate-result').remove();
-                        el.after('<iframe class="automate-result" src="' + res.public_url + '" frameborder="0" style="width: 100%; height: 800px; border: 0;"></iframe>');
-                    }
-                 },
-                 error: function (xhr) {
-                    if (xhr.responseJSON) {
-                        el.after('<div class="automate-result">' + xhr.responseJSON.error + '</div>');
-                    }
-                 },
-                 complete: function () {
-                    $j('.automate-result-loading').remove();
-                 }
-             });
-         }
-    });
-    </script>
 </c:if>
 <c:if test="${not empty session}">
     <c:if test="${not empty resultsUrl}">

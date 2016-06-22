@@ -1,5 +1,6 @@
-package com.browserstack.automate.ci.teamcity;
+package com.browserstack.automate.ci.teamcity.config;
 
+import com.browserstack.automate.ci.teamcity.BrowserStackParameters;
 import com.browserstack.automate.ci.teamcity.BrowserStackParameters.EnvVars;
 import jetbrains.buildServer.serverSide.BuildFeature;
 import jetbrains.buildServer.serverSide.SBuild;
@@ -56,11 +57,6 @@ public class AutomateBuildFeature extends BuildFeature {
                 params.get(EnvVars.BROWSERSTACK_LOCAL).toLowerCase().equals("true");
 
         return "Local Enabled: " + (hasLocalEnabled ? "true" : "false");
-    }
-
-    public static SBuildFeatureDescriptor findFeatureDescriptor(SRunningBuild build) {
-        Collection<SBuildFeatureDescriptor> buildFeatures = build.getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
-        return (!buildFeatures.isEmpty()) ? buildFeatures.iterator().next() : null;
     }
 
     public static SBuildFeatureDescriptor findFeatureDescriptor(SBuild build) {
