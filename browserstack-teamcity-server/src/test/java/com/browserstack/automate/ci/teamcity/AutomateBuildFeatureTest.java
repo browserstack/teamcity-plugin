@@ -1,15 +1,16 @@
 package com.browserstack.automate.ci.teamcity;
 
 import com.browserstack.automate.ci.teamcity.config.AutomateBuildFeature;
+import jetbrains.buildServer.BaseJMockTestCase;
+import jetbrains.buildServer.Mocked;
+import jetbrains.buildServer.serverSide.SBuildServer;
+import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
 import org.jmock.Expectations;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import jetbrains.buildServer.BaseJMockTestCase;
-import jetbrains.buildServer.Mocked;
-import jetbrains.buildServer.web.openapi.PluginDescriptor;
-
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,10 +24,14 @@ public class AutomateBuildFeatureTest extends BaseJMockTestCase {
     @Mocked
     private PluginDescriptor mockedPluginDescriptor;
 
+    @Mocked
+    private SBuildServer mockedSBuildServer;
+
     @Test
     public void testDescriptionWithNoParametersSet() throws Exception {
         /* =================== Prepare ================= */
-        AutomateBuildFeature automateBuildFeature = new AutomateBuildFeature(mockedPluginDescriptor);
+        setUpExpectations();
+        AutomateBuildFeature automateBuildFeature = new AutomateBuildFeature(mockedSBuildServer, mockedPluginDescriptor);
         Map<String, String> paramMap = new HashMap<String, String>();
 
         /* =================== Execute ================= */
@@ -39,7 +44,8 @@ public class AutomateBuildFeatureTest extends BaseJMockTestCase {
     @Test
     public void testDescriptionForLocalNotConfigured() throws Exception {
         /* =================== Prepare ================= */
-        AutomateBuildFeature automateBuildFeature = new AutomateBuildFeature(mockedPluginDescriptor);
+        setUpExpectations();
+        AutomateBuildFeature automateBuildFeature = new AutomateBuildFeature(mockedSBuildServer, mockedPluginDescriptor);
         Map<String, String> paramMap = createParams();
 
         /* =================== Execute ================= */
@@ -53,7 +59,8 @@ public class AutomateBuildFeatureTest extends BaseJMockTestCase {
     @Test
     public void testDescriptionForLocalTrue() throws Exception {
         /* =================== Prepare ================= */
-        AutomateBuildFeature automateBuildFeature = new AutomateBuildFeature(mockedPluginDescriptor);
+        setUpExpectations();
+        AutomateBuildFeature automateBuildFeature = new AutomateBuildFeature(mockedSBuildServer, mockedPluginDescriptor);
         Map<String, String> paramMap = createParams();
         paramMap.put(BrowserStackParameters.EnvVars.BROWSERSTACK_LOCAL, "true");
 
@@ -67,7 +74,8 @@ public class AutomateBuildFeatureTest extends BaseJMockTestCase {
     @Test
     public void testDescriptionForLocalFalse() throws Exception {
         /* =================== Prepare ================= */
-        AutomateBuildFeature automateBuildFeature = new AutomateBuildFeature(mockedPluginDescriptor);
+        setUpExpectations();
+        AutomateBuildFeature automateBuildFeature = new AutomateBuildFeature(mockedSBuildServer, mockedPluginDescriptor);
         Map<String, String> paramMap = createParams();
         paramMap.put(BrowserStackParameters.EnvVars.BROWSERSTACK_LOCAL, "false");
 
@@ -89,11 +97,13 @@ public class AutomateBuildFeatureTest extends BaseJMockTestCase {
     @Test
     public void testBuildFeatureGetters() throws Exception {
         /* =================== Prepare ================= */
-        m.checking(new Expectations(){{
+        setUpExpectations();
+        m.checking(new Expectations() {{
             oneOf(mockedPluginDescriptor).getPluginResourcesPath("automateSettings.jsp");
             will(returnValue("src/main/resources/buildServerResources/automateSettings.jsp"));
         }});
-        AutomateBuildFeature automateBuildFeature = new AutomateBuildFeature(mockedPluginDescriptor);
+
+        AutomateBuildFeature automateBuildFeature = new AutomateBuildFeature(mockedSBuildServer, mockedPluginDescriptor);
 
         /* =================== Execute ================= */
         String type = automateBuildFeature.getType();
@@ -107,5 +117,21 @@ public class AutomateBuildFeatureTest extends BaseJMockTestCase {
         Assert.assertEquals(displayName, BrowserStackParameters.DISPLAY_NAME, "Display name not as expected.");
         Assert.assertEquals(editParamtersUrl, "src/main/resources/buildServerResources/automateSettings.jsp", "Parameters URL not as expected.");
         Assert.assertEquals(multipleFeaturesPerBuild, false, "Multiple features per build not as expected.");
+    }
+
+    private void setUpExpectations() {
+        m.checking(new Expectations() {{
+            oneOf(mockedSBuildServer).getFullServerVersion();
+            will(returnValue("9.0.3"));
+
+            oneOf(mockedPluginDescriptor).getPluginName();
+            will(returnValue("BrowserStack"));
+
+            oneOf(mockedPluginDescriptor).getPluginVersion();
+            will(returnValue("1.0"));
+
+            oneOf(mockedPluginDescriptor).getPluginRoot();
+            will(returnValue(new File(".")));
+        }});
     }
 }

@@ -1,6 +1,8 @@
 package com.browserstack.automate.ci.teamcity.ui;
 
 import com.browserstack.automate.AutomateClient;
+import com.browserstack.automate.ci.common.analytics.Analytics;
+import com.browserstack.automate.ci.common.analytics.AnalyticsDataProvider.ProviderName;
 import com.browserstack.automate.ci.teamcity.BrowserStackParameters;
 import com.browserstack.automate.ci.teamcity.config.AutomateBuildFeature;
 import com.browserstack.automate.ci.teamcity.util.ParserUtil;
@@ -33,7 +35,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -48,6 +49,8 @@ public class AutomateResultsTab extends ViewLogTab {
 
     private static final Pattern PATTERN_PARAM_SESSION = Pattern.compile("&session=.*");
 
+    private final Analytics analytics;
+
     /**
      * Creates and registers tab for Build Results pages
      *
@@ -61,6 +64,8 @@ public class AutomateResultsTab extends ViewLogTab {
         setPlaceId(PlaceId.BUILD_RESULTS_TAB);
         setIncludeUrl(descriptor.getPluginResourcesPath("automateResult.jsp"));
         register();
+
+        analytics = Analytics.getAnalytics(ProviderName.TEAMCITY);
     }
 
     @Override
@@ -98,6 +103,11 @@ public class AutomateResultsTab extends ViewLogTab {
 
     private void fillModelSession(final String sessionId, final Map<String, Object> model,
                                   final HttpServletRequest request, final SBuild build) {
+        if (analytics != null) {
+            analytics.trackIframeRequest();
+            Loggers.SERVER.info("AutomateResultsTab: trackIframeRequest");
+        }
+
         AutomateClient automateClient = newAutomateClient(build);
         if (automateClient != null) {
             try {
