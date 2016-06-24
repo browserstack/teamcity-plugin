@@ -15,13 +15,15 @@ public class Analytics {
 
     protected static final String DEFAULT_CLIENT_ID = "unknown-client";
 
-    protected static final GoogleAnalytics ga = new GoogleAnalytics("UA-79358556-2");
+    private static final String GA_TRACKING_ID = "UA-79358556-2";
 
     private String clientId;
 
     private boolean isEnabled;
 
     private VersionTracker versionTracker;
+
+    private final GoogleAnalytics ga;
 
     private final AnalyticsDataProvider dataProvider;
 
@@ -30,6 +32,7 @@ public class Analytics {
     public Analytics(AnalyticsDataProvider dataProvider) {
         this.dataProvider = dataProvider;
         this.versionTracker = new VersionTracker(dataProvider.getRootDir());
+        this.ga = new GoogleAnalytics(GA_TRACKING_ID);
         this.isEnabled = true;
 
         trackInstall();
