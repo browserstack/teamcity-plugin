@@ -82,14 +82,8 @@ public class Analytics {
     }
 
     public void trackBuildRun(boolean localEnabled, boolean localPathSet,
-                              boolean localOptionsSet, boolean isReportEnabled) {
+                              boolean localOptionsSet) {
         EventHit eventHit = newEventHit((localEnabled ? "with" : "without") + "Local", "buildRun");
-        if (isReportEnabled) {
-            eventHit.eventLabel("embedTrue");
-        } else {
-            eventHit.eventLabel("embedFalse");
-        }
-
         if (localPathSet) {
             eventHit.customDimension(1, "withLocalPath");
         } else {
@@ -103,6 +97,10 @@ public class Analytics {
         }
 
         postAsync(eventHit);
+    }
+
+    public void trackReportView() {
+        postAsync(newEventHit("report", "separateTab"));
     }
 
     public void trackIframeRequest() {

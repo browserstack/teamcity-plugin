@@ -47,7 +47,7 @@ public class BrowserStackBuildServerAdapter extends BuildServerAdapter {
                 boolean localOptionsSet = params.containsKey(BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS) &&
                         params.get(BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS).length() > 0;
 
-                analytics.trackBuildRun(localEnabled, false, localOptionsSet, true);
+                analytics.trackBuildRun(localEnabled, false, localOptionsSet);
             }
         }
     }

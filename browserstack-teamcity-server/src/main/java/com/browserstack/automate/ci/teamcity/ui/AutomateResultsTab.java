@@ -133,6 +133,11 @@ public class AutomateResultsTab extends ViewLogTab {
     }
 
     private void fillModelSessionList(final Map<String, Object> model, final SBuild build) {
+        if (analytics != null) {
+            analytics.trackReportView();
+            Loggers.SERVER.info("AutomateResultsTab: trackReportView");
+        }
+
         BuildArtifacts buildArtifacts = build.getArtifacts(BuildArtifactsViewMode.VIEW_HIDDEN_ONLY);
         BuildStatistics buildStatistics = build.getBuildStatistics(BuildStatisticsOptions.ALL_TESTS_NO_DETAILS);
         final Map<String, STestRun> testResultMap = ParserUtil.processTestResults(buildStatistics.getAllTests());
