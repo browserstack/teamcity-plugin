@@ -7,4 +7,5 @@
     <bean id="AutomateBuildFeature" class="com.browserstack.automate.ci.teamcity.config.AutomateBuildFeature"/>
     <bean id="AutomateResultsTab" class="com.browserstack.automate.ci.teamcity.ui.AutomateResultsTab"/>
     <bean id="AutomateSessionLink" class="com.browserstack.automate.ci.teamcity.ui.AutomateSessionLink"/>
+    <bean id="AutomateSessionController" class="com.browserstack.automate.ci.teamcity.analytics.AutomateSessionController"/>
 </beans>
