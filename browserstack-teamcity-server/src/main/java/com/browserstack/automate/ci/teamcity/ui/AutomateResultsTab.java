@@ -2,7 +2,6 @@ package com.browserstack.automate.ci.teamcity.ui;
 
 import com.browserstack.automate.AutomateClient;
 import com.browserstack.automate.ci.common.analytics.Analytics;
-import com.browserstack.automate.ci.common.analytics.AnalyticsDataProvider.ProviderName;
 import com.browserstack.automate.ci.teamcity.BrowserStackParameters;
 import com.browserstack.automate.ci.teamcity.config.AutomateBuildFeature;
 import com.browserstack.automate.ci.teamcity.util.ParserUtil;
@@ -65,7 +64,7 @@ public class AutomateResultsTab extends ViewLogTab {
         setIncludeUrl(descriptor.getPluginResourcesPath("automateResult.jsp"));
         register();
 
-        analytics = Analytics.getAnalytics(ProviderName.TEAMCITY);
+        analytics = Analytics.getInstance();
     }
 
     @Override

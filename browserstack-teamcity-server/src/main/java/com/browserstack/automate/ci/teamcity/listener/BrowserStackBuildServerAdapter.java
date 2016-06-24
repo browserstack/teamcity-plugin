@@ -22,7 +22,7 @@ public class BrowserStackBuildServerAdapter extends BuildServerAdapter {
     private final Analytics analytics;
 
     public BrowserStackBuildServerAdapter(@NotNull final SBuildServer sBuildServer, @NotNull final PluginDescriptor pluginDescriptor) {
-        this.analytics = Analytics.init(new TeamcityAnalyticsDataProvider(sBuildServer, pluginDescriptor));
+        this.analytics = Analytics.createInstance(new TeamcityAnalyticsDataProvider(sBuildServer, pluginDescriptor));
         sBuildServer.addListener(this);
     }
 

@@ -1,14 +1,11 @@
 package com.browserstack.automate.ci.common.analytics;
 
-import com.browserstack.automate.ci.common.analytics.AnalyticsDataProvider.ProviderName;
 import com.brsanthu.googleanalytics.EventHit;
 import com.brsanthu.googleanalytics.GoogleAnalytics;
 import com.brsanthu.googleanalytics.GoogleAnalyticsRequest;
 import com.brsanthu.googleanalytics.TimingHit;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Shirish Kamath
@@ -20,8 +17,6 @@ public class Analytics {
 
     protected static final GoogleAnalytics ga = new GoogleAnalytics("UA-79358556-2");
 
-    protected static final Map<ProviderName, Analytics> analyticsMap = new HashMap<ProviderName, Analytics>();
-
     private String clientId;
 
     private boolean isEnabled;
@@ -29,6 +24,8 @@ public class Analytics {
     private VersionTracker versionTracker;
 
     private final AnalyticsDataProvider dataProvider;
+
+    private static Analytics analyticsInstance;
 
     public Analytics(AnalyticsDataProvider dataProvider) {
         this.dataProvider = dataProvider;
@@ -129,17 +126,12 @@ public class Analytics {
         this.isEnabled = isEnabled;
     }
 
-    public static Analytics init(final AnalyticsDataProvider dataProvider) {
-        if (analyticsMap.containsKey(dataProvider.getProviderName())) {
-            return analyticsMap.get(dataProvider.getProviderName());
-        } else {
-            Analytics analytics = new Analytics(dataProvider);
-            analyticsMap.put(dataProvider.getProviderName(), analytics);
-            return analytics;
-        }
+    public static Analytics createInstance(final AnalyticsDataProvider dataProvider) {
+        analyticsInstance = new Analytics(dataProvider);
+        return analyticsInstance;
     }
 
-    public static Analytics getAnalytics(final ProviderName providerName) {
-        return analyticsMap.get(providerName);
+    public static Analytics getInstance() {
+        return analyticsInstance;
     }
 }

@@ -30,12 +30,6 @@ public class TeamcityAnalyticsDataProvider implements AnalyticsDataProvider {
         pluginVersion = pluginDescriptor.getPluginVersion();
         pluginRootDir = pluginDescriptor.getPluginRoot();
         isEnabled = true;
-        Loggers.SERVER.info("pluginRootDir: " + pluginRootDir.getAbsolutePath());
-    }
-
-    @Override
-    public ProviderName getProviderName() {
-        return ProviderName.TEAMCITY;
     }
 
     @Override
@@ -45,7 +39,7 @@ public class TeamcityAnalyticsDataProvider implements AnalyticsDataProvider {
 
     @Override
     public String getApplicationName() {
-        return ProviderName.TEAMCITY.name().toLowerCase();
+        return "teamcity";
     }
 
     @Override

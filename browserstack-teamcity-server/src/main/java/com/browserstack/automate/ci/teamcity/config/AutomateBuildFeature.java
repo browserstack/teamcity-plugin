@@ -22,7 +22,7 @@ public class AutomateBuildFeature extends BuildFeature {
 
     public AutomateBuildFeature(@NotNull final SBuildServer server, @NotNull final PluginDescriptor pluginDescriptor) {
         this.pluginDescriptor = pluginDescriptor;
-        Analytics.init(new TeamcityAnalyticsDataProvider(server, pluginDescriptor));
+        Analytics.createInstance(new TeamcityAnalyticsDataProvider(server, pluginDescriptor));
     }
 
     @NotNull

@@ -8,12 +8,6 @@ import java.io.File;
  */
 public interface AnalyticsDataProvider {
 
-    enum ProviderName {
-        TEAMCITY
-    }
-
-    ProviderName getProviderName();
-
     File getRootDir();
 
     String getApplicationName();

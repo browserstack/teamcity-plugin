@@ -1,7 +1,6 @@
 package com.browserstack.automate.ci.teamcity.analytics;
 
 import com.browserstack.automate.ci.common.analytics.Analytics;
-import com.browserstack.automate.ci.common.analytics.AnalyticsDataProvider.ProviderName;
 import com.browserstack.automate.ci.teamcity.BrowserStackParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jetbrains.buildServer.controllers.BaseController;
@@ -33,7 +32,7 @@ public class AutomateSessionController extends BaseController {
                                      @NotNull WebControllerManager manager) {
         super(server);
         manager.registerController(BrowserStackParameters.SESSIONS_CONTROLLER_PATH, this);
-        analytics = Analytics.getAnalytics(ProviderName.TEAMCITY);
+        analytics = Analytics.getInstance();
     }
 
     @Nullable
