@@ -87,12 +87,12 @@ public class AutomateSessionLink extends SimplePageExtension {
                 testIndex++;
 
                 if (tr.equals(testRun)) {
-                    return testIndex;
+                    break;
                 }
             }
         }
 
-        return -1;
+        return testIndex;
     }
 
     @Override
