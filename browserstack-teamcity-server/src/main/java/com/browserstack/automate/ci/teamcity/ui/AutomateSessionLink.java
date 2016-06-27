@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,8 +60,10 @@ public class AutomateSessionLink extends SimplePageExtension {
             }
 
             if (testRun != null) {
+                long testIndex = getTestIndex(testRuns, testRun);
+
                 try {
-                    String sessionId = findSessionId(testRun);
+                    String sessionId = findSessionId(testRun, testIndex);
                     if (StringUtils.isNotBlank(sessionId)) {
                         model.put("session", sessionId);
                     }
@@ -72,17 +75,33 @@ public class AutomateSessionLink extends SimplePageExtension {
         }
     }
 
+    private long getTestIndex(final List<STestRun> testRuns, final STestRun testRun) {
+        // TODO: This iterates through all test results with the same name as the test case being queries
+        // and figure out index for the test case w.r.t other tests with the same name (but different paramaters)
+
+        Map<String, Long> testCaseIndices = new HashMap<String, Long>();
+        String currentTestCaseName = ParserUtil.getTestName(testRun);
+
+        for (STestRun tr : testRuns) {
+            String testCaseName = ParserUtil.getTestName(tr);
+            if (testCaseName.equals(currentTestCaseName)) {
+                Long testIndex = testCaseIndices.containsKey(testCaseName) ? testCaseIndices.get(testCaseName) : -1L;
+                testCaseIndices.put(testCaseName, ++testIndex);
+            }
+        }
+
+        return testCaseIndices.containsKey(currentTestCaseName) ? testCaseIndices.get(currentTestCaseName) : -1L;
+    }
+
     @Override
     public boolean isAvailable(@NotNull final HttpServletRequest request) {
         return true;
     }
 
     @SuppressWarnings("unchecked")
-    private static String findSessionId(final STestRun testRun) throws IOException {
+    private static String findSessionId(final STestRun testRun, final long testIndex) throws IOException {
         String testNameFull = ParserUtil.getTestName(testRun);
-        String testParams = testRun.getTest().getName().getParameters();
-        final String testId = String.format("%s{%s}", testNameFull, testParams);
-
+        final String testId = String.format("%s{%d}", testNameFull, Math.max(0, testIndex));
         BuildArtifacts buildArtifacts = testRun.getBuild().getArtifacts(BuildArtifactsViewMode.VIEW_HIDDEN_ONLY);
         final String[] sessions = new String[]{null};
 
