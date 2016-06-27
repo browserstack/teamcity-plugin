@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,22 +74,25 @@ public class AutomateSessionLink extends SimplePageExtension {
         }
     }
 
-    private long getTestIndex(final List<STestRun> testRuns, final STestRun testRun) {
+    private int getTestIndex(final List<STestRun> testRuns, final STestRun testRun) {
         // TODO: This iterates through all test results with the same name as the test case being queries
-        // and figure out index for the test case w.r.t other tests with the same name (but different paramaters)
+        // and figure out index for the test case w.r.t other tests with the same name (but different parameters)
 
-        Map<String, Long> testCaseIndices = new HashMap<String, Long>();
         String currentTestCaseName = ParserUtil.getTestName(testRun);
+        int testIndex = -1;
 
         for (STestRun tr : testRuns) {
             String testCaseName = ParserUtil.getTestName(tr);
             if (testCaseName.equals(currentTestCaseName)) {
-                Long testIndex = testCaseIndices.containsKey(testCaseName) ? testCaseIndices.get(testCaseName) : -1L;
-                testCaseIndices.put(testCaseName, ++testIndex);
+                testIndex++;
+
+                if (tr.equals(testRun)) {
+                    return testIndex;
+                }
             }
         }
 
-        return testCaseIndices.containsKey(currentTestCaseName) ? testCaseIndices.get(currentTestCaseName) : -1L;
+        return -1;
     }
 
     @Override
