@@ -1,8 +1,6 @@
 # BrowserStack TeamCity Plugin
 ==============================
 
-This plugin allows you to integrate your Selenium tests in TeamCity with BrowserStack Automate.
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -13,7 +11,10 @@ This plugin allows you to integrate your Selenium tests in TeamCity with Browser
   - [Building the Plugin](#building-the-plugin)
   - [Reporting Issues](#reporting-issues)
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->  
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
+This plugin allows you to integrate your Selenium tests in TeamCity with BrowserStack Automate.
 
 ## Features
 1. Setup and teardown BrowserStackLocal for testing internal,dev or staging environments. 
