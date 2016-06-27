@@ -16,6 +16,8 @@ public class BrowserStackParameters {
 
     public static final String DISPLAY_NAME = "BrowserStack";
 
+    public static final String BROWSERSTACK_LOCAL_PATH = "BROWSERSTACK_LOCAL_PATH";
+
     public static final String BROWSERSTACK_LOCAL_OPTIONS = "BROWSERSTACK_LOCAL_OPTIONS";
 
     public static final String ENABLE_ANALYTICS = "ENABLE_ANALYTICS";
