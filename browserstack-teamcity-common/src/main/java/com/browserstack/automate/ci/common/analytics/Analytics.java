@@ -91,7 +91,7 @@ public class Analytics {
 
     protected void attachGlobalProperties(GoogleAnalyticsRequest gaRequest) {
         gaRequest.clientId((clientId != null) ? clientId : getClientId());
-        gaRequest.applicationName(dataProvider.getApplicationName() + "-" + dataProvider.getApplicationVersion());
+        gaRequest.applicationName(dataProvider.getApplicationVersion());
         gaRequest.applicationId(dataProvider.getPluginName());
         gaRequest.applicationVersion(dataProvider.getPluginVersion());
     }
