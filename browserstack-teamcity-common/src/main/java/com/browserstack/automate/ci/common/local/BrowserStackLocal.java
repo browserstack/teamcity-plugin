@@ -11,10 +11,12 @@ import java.util.UUID;
 public abstract class BrowserStackLocal extends Local {
     private static final String OPTION_LOCAL_IDENTIFIER = "localIdentifier";
 
+    private final String path;
     private final List<String> options;
     private String localIdentifier;
 
-    public BrowserStackLocal(String options) {
+    public BrowserStackLocal(String path, String options) {
+        this.path = path;
         this.options = processLocalOptions((options != null) ? options.trim() : "");
     }
 
@@ -30,6 +32,10 @@ public abstract class BrowserStackLocal extends Local {
         List<String> cmdArgs = command.subList(1, command.size());
         DaemonAction daemonAction = DaemonAction.detectDaemonAction(stringifyCommand(command));
         if (daemonAction != null) {
+            if (path != null && path.trim().length() > 0) {
+                command.set(0, path);
+            }
+
             cmdArgs.addAll(options);
         }
 
