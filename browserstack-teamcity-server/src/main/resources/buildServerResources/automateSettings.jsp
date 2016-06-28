@@ -58,3 +58,16 @@
         <span class="error" id="error_<%= BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS %>"/>
     </td>
 </tr>
+<tr id="<%= BrowserStackParameters.ENABLE_ANALYTICS %>.container">
+    <th><label for="<%= BrowserStackParameters.ENABLE_ANALYTICS %>">Send build usage data to BrowserStack:</label></th>
+    <td>
+        <props:checkboxProperty name="<%= BrowserStackParameters.ENABLE_ANALYTICS %>"
+            treatFalseValuesCorrectly="${true}"
+            uncheckedValue="false"/>
+
+        <span class="smallNote">
+            If checked, usage statistics will be shared with BrowserStack.
+        </span>
+        <span class="error" id="error_<%= BrowserStackParameters.ENABLE_ANALYTICS %>"/>
+    </td>
+</tr>
