@@ -5,12 +5,15 @@
 
     <groupId>com.browserstack</groupId>
     <artifactId>browserstack-teamcity</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <properties>
         <teamcity-version>9.0.3</teamcity-version>
         <jdk.version>1.6</jdk.version>
+        <!-- This is the testing Tracking Id. If you want to build the project for production, please use the
+     production profile which replaces this with the production tracking id. -->
+        <google.analytics.tracking.id>UA-79358556-2</google.analytics.tracking.id>
     </properties>
 
     <repositories>
@@ -26,6 +29,13 @@
             <url>http://repository.jetbrains.com/all</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <modules>
+        <module>browserstack-teamcity-server</module>
+        <module>browserstack-teamcity-agent</module>
+        <module>browserstack-teamcity-common</module>
+        <module>build</module>
+    </modules>
 
     <build>
         <plugins>
@@ -52,10 +62,13 @@
         </pluginManagement>
     </build>
 
-    <modules>
-        <module>browserstack-teamcity-server</module>
-        <module>browserstack-teamcity-agent</module>
-        <module>browserstack-teamcity-common</module>
-        <module>build</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <google.analytics.tracking.id>UA-79358556-1</google.analytics.tracking.id>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>

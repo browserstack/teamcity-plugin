@@ -1,11 +1,17 @@
 package com.browserstack.automate.ci.common.analytics;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+
 import com.brsanthu.googleanalytics.EventHit;
 import com.brsanthu.googleanalytics.GoogleAnalytics;
 import com.brsanthu.googleanalytics.GoogleAnalyticsRequest;
 import com.brsanthu.googleanalytics.TimingHit;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * @author Shirish Kamath
@@ -14,8 +20,8 @@ import java.io.IOException;
 public class Analytics {
 
     protected static final String DEFAULT_CLIENT_ID = "unknown-client";
-
-    private static final String GA_TRACKING_ID = "UA-79358556-2";
+    private static final String PLUGIN_PROPERTIES_FILE = "plugin.properties";
+    private static final String GOOGLE_PROPERTIES_KEY = "google.analytics.tracking.id";
 
     private String clientId;
 
@@ -23,7 +29,7 @@ public class Analytics {
 
     private VersionTracker versionTracker;
 
-    private final GoogleAnalytics ga;
+    private final GoogleAnalytics analyticsClient;
 
     private final AnalyticsDataProvider dataProvider;
 
@@ -32,15 +38,39 @@ public class Analytics {
     public Analytics(AnalyticsDataProvider dataProvider) {
         this.dataProvider = dataProvider;
         this.versionTracker = new VersionTracker(dataProvider.getRootDir());
-        this.ga = new GoogleAnalytics(GA_TRACKING_ID);
+        this.analyticsClient = buildGoogleAnalyticsClient();
         this.isEnabled = true;
 
         trackInstall();
     }
 
+    /**
+     * Method that builds a {@link GoogleAnalytics} object with the tracking id read from a plugins.properties file.
+     *
+     * @return a new instance of GoogleAnalytics.
+     */
+    private GoogleAnalytics buildGoogleAnalyticsClient() {
+        Properties pluginProps = new Properties();
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(PLUGIN_PROPERTIES_FILE);
+            pluginProps.load(inputStream);
+
+            String trackingId = pluginProps.getProperty(GOOGLE_PROPERTIES_KEY);
+            if (StringUtils.isNotEmpty(trackingId)) {
+                return new GoogleAnalytics(trackingId);
+            }
+        } catch (IOException ioe) {
+            isEnabled = false;
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+        return null;
+    }
+
     protected void postAsync(GoogleAnalyticsRequest request) {
-        if (isEnabled && dataProvider.isEnabled()) {
-            ga.postAsync(request);
+        if (isEnabled && dataProvider.isEnabled() && analyticsClient != null) {
+            analyticsClient.postAsync(request);
         }
     }
 
@@ -61,7 +91,7 @@ public class Analytics {
 
     protected void attachGlobalProperties(GoogleAnalyticsRequest gaRequest) {
         gaRequest.clientId((clientId != null) ? clientId : getClientId());
-        gaRequest.applicationName(dataProvider.getApplicationName() + "-" + dataProvider.getApplicationVersion());
+        gaRequest.applicationName(dataProvider.getApplicationVersion());
         gaRequest.applicationId(dataProvider.getPluginName());
         gaRequest.applicationVersion(dataProvider.getPluginVersion());
     }

@@ -4,7 +4,7 @@
   <parent>
     <artifactId>browserstack-teamcity</artifactId>
     <groupId>com.browserstack</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
   <artifactId>browserstack-teamcity-server</artifactId>
   <packaging>jar</packaging>
@@ -13,7 +13,7 @@
     <dependency>
       <groupId>com.browserstack</groupId>
       <artifactId>browserstack-teamcity-common</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
 
