@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Exposes a JSON API for the frontend to record the iframe load time.
+ *
  * @author Shirish Kamath
  * @author Anirudha Khanna
  */

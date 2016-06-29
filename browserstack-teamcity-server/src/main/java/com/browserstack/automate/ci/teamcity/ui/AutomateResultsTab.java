@@ -39,6 +39,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
+ * Controller for the "BrowserStack" tab displayed in the UI with test results.
+ * This handles both views: the list of test cases and the iframe for a single test.
+ *
  * @author Shirish Kamath
  * @author Anirudha Khanna
  */
@@ -157,6 +160,8 @@ public class AutomateResultsTab extends ViewLogTab {
                         if (results != null) {
                             for (Element elem : results) {
                                 String testCaseId = elem.getAttribute("id").getValue();
+
+                                // Checks if test case in our report exists in test report XMLs parsed by TeamCity
                                 if (testCaseId != null && testResultMap.containsKey(testCaseId)) {
                                     STestRun testRun = testResultMap.get(testCaseId);
                                     elem.setAttribute("status", testRun.getStatusText());
