@@ -21,6 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+
+/**
+ * Component that runs on the Agent side.
+ * Setups and tears down BrowserStackLocal, if configured.
+ * Also responsible for copying report files into artifacts after build completion.
+ */
 public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
     private static final String REPORT_FILE_PATTERN = "**/browserstack-reports/REPORT-*.xml";
 
@@ -93,6 +99,8 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
             killLocal(build);
         }
 
+        // find and collect report files that match our Ant pattern
+        // if found, artifacts are published to the artifact directory by appending "=> <path>"
         List<File> reportFiles = new ArrayList<File>();
         FileUtil.collectMatchedFiles(build.getCheckoutDirectory(),
                 Pattern.compile(FileUtil.convertAntToRegexp(REPORT_FILE_PATTERN)),
@@ -110,6 +118,11 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
         }
     }
 
+    /**
+     * Loads the build feature for the current build and checks if BrowserStackLocal is enabled
+     *
+     * @param build Current build.
+     */
     private void loadBuildFeature(final AgentRunningBuild build) {
         Collection<AgentBuildFeature> buildFeatures = build.getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
         isEnabled = !buildFeatures.isEmpty();
@@ -121,6 +134,12 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
         }
     }
 
+    /**
+     * Adds environment variables to the build environment.
+     *
+     * @param runner Represents current build runner.
+     * @param config
+     */
     private void exportEnvVars(final BuildRunnerContext runner, final Map<String, String> config) {
         if (!config.containsKey(EnvVars.BROWSERSTACK_USER) || !config.containsKey(EnvVars.BROWSERSTACK_ACCESSKEY)) {
             return;
@@ -145,6 +164,12 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
         buildLogger.message(EnvVars.BROWSERSTACK_BUILD + "=" + buildId);
     }
 
+    /**
+     * Returns a unique Build Id for the currently running build.
+     *
+     * @param runner Represents current build runner.
+     * @return String Unique build Id.
+     */
     private static String getBuildId(final BuildRunnerContext runner) {
         return runner.getBuild().getBuildTypeName() +
                 "-" +
@@ -153,6 +178,11 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
                 runner.getBuild().getBuildNumber();
     }
 
+    /**
+     * Terminates the BrowserStackLocal binary.
+     *
+     * @param build Represents running build on the agent side.
+     */
     private void killLocal(final AgentRunningBuild build) {
         if (browserstackLocal != null) {
             BuildProgressLogger buildLogger = build.getBuildLogger();

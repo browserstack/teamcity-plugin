@@ -21,6 +21,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configuration for the "BrowserStack" build feature for each project.
+ *
+ * @author Shirish Kamath
+ * @author Anirudha Khanna
+ */
 public class AutomateBuildFeature extends BuildFeature {
 
     private static final String ERR_INVALID_PATH = "Invalid path";
@@ -55,6 +61,13 @@ public class AutomateBuildFeature extends BuildFeature {
         return false;
     }
 
+    /**
+     * Returns parameters description of the build feature, will be used in the TeamCity UI to
+     * describe this feature settings. Can contain HTML, so please make sure it is safe in terms of XSS.
+     *
+     * @param params parameters to describe
+     * @return short description of parameters.
+     */
     @NotNull
     @Override
     public String describeParameters(@NotNull Map<String, String> params) {
@@ -78,10 +91,17 @@ public class AutomateBuildFeature extends BuildFeature {
             defaults = new HashMap<String, String>();
         }
 
+        // Analytics are enabled by default
         defaults.put(BrowserStackParameters.ENABLE_ANALYTICS, "true");
         return defaults;
     }
 
+    /**
+     * Checks if the "BrowserStack" build feature has been added to the given build.
+     *
+     * @param build
+     * @return
+     */
     @Nullable
     @Override
     public PropertiesProcessor getParametersProcessor() {

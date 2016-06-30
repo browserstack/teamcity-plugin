@@ -14,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
+ * Tracks the events occurring at the build server.
+ * Mainly used for Analytics.
+ *
  * @author Shirish Kamath
  * @author Anirudha Khanna
  */
