@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 
 /**
+ * Provides data for Analytics to gather and submit.
+ *
  * @author Shirish Kamath
  * @author Anirudha Khanna
  */

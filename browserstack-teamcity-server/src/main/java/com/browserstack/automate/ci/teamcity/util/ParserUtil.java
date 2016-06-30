@@ -23,11 +23,21 @@ public class ParserUtil {
 
     private static final String PACKAGE_DEFAULT = "(root)";
 
+    /**
+     * Returns the full class name (packageName.className)
+     * @param testRun
+     * @return
+     */
     public static String getFullClassName(final STestRun testRun) {
         TestName testName = testRun.getTest().getName();
         return String.format("%s.%s", testName.hasPackage() ? testName.getPackageName() : PACKAGE_DEFAULT, testName.getClassName());
     }
 
+    /**
+     * Returns the full test name (packageName.className.testName)
+     * @param testRun
+     * @return
+     */
     public static String getTestName(final STestRun testRun) {
         return String.format("%s.%s", getFullClassName(testRun), testRun.getTest().getName().getTestMethodName());
     }
@@ -44,6 +54,13 @@ public class ParserUtil {
         return null;
     }
 
+    /**
+     * Generates a map for all test cases parsed by TeamCity from test report XMLs.
+     * Keys in the map are unique identifiers for each test case (packageName.className.methodName{testIndex}).
+     *
+     * @param allTests
+     * @return
+     */
     public static Map<String, STestRun> processTestResults(final List<STestRun> allTests) {
         Map<String, STestRun> testStatusMap = new HashMap<String, STestRun>();
         Map<String, Long> testCaseIndices = new HashMap<String, Long>();

@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * Implementation of BrowserStackLocal for TeamCity.
+ * Overrides the default {@link ProcessBuilder} APIs to use TeamCity APIs for launching binaries on the command-line.
+ */
 public class TeamCityBrowserStackLocal extends BrowserStackLocal {
     private final BuildProgressLogger buildLogger;
 

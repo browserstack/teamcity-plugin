@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Controller for the link to the BrowserStack tab displayed
+ * under the stacktrace of a failed test.
+ *
  * @author Shirish Kamath
  * @author Anirudha Khanna
  */
@@ -51,6 +54,7 @@ public class AutomateSessionLink extends SimplePageExtension {
             List<STestRun> testRuns = (List<STestRun>) testRunsAttr;
             STestRun testRun = null;
 
+            // Get the STestRun for the current STest
             for (STestRun tr : testRuns) {
                 if (tr.getTest().getTestNameId() == test.getTestNameId()) {
                     testRun = tr;
@@ -74,6 +78,13 @@ public class AutomateSessionLink extends SimplePageExtension {
         }
     }
 
+    /**
+     * Finds the index for the give test case w.r.t. to other test cases having the same name.
+     *
+     * @param testRuns List of test runs executed in this build.
+     * @param testRun  Current test run.
+     * @return
+     */
     private int getTestIndex(final List<STestRun> testRuns, final STestRun testRun) {
         // TODO: This iterates through all test results with the same name as the test case being queries
         // and figure out index for the test case w.r.t other tests with the same name (but different parameters)
@@ -100,6 +111,15 @@ public class AutomateSessionLink extends SimplePageExtension {
         return true;
     }
 
+    /**
+     * Finds the sessionId for the current test case by parsing the XML artifact files
+     * and returning the session Id for the matching test case (name{index})
+     *
+     * @param testRun   Current test run.
+     * @param testIndex Test index for the test case w.r.t other tests having the same name.
+     * @return BrowserStack Automate Session Id
+     * @throws IOException
+     */
     @SuppressWarnings("unchecked")
     private static String findSessionId(final STestRun testRun, final long testIndex) throws IOException {
         String testNameFull = ParserUtil.getTestName(testRun);
