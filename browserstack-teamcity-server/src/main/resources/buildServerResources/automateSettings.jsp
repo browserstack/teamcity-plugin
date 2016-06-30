@@ -47,10 +47,21 @@
         <span class="error" id="error_<%= BrowserStackParameters.EnvVars.BROWSERSTACK_LOCAL %>"/>
     </td>
 </tr>
+<tr id="<%= BrowserStackParameters.BROWSERSTACK_LOCAL_PATH %>.container">
+    <th><label for="<%= BrowserStackParameters.BROWSERSTACK_LOCAL_PATH %>">BrowserStack Local Path:</label></th>
+    <td>
+        <props:textProperty name="<%= BrowserStackParameters.BROWSERSTACK_LOCAL_PATH %>" className="longField"/>
+
+        <span class="smallNote">
+            If left blank BrowserStack Local binary will be downloaded at default location by bindings.
+        </span>
+        <span class="error" id="error_<%= BrowserStackParameters.BROWSERSTACK_LOCAL_PATH %>"/>
+    </td>
+</tr>
 <tr id="<%= BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS %>.container">
     <th><label for="<%= BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS %>">BrowserStack Local Options:</label></th>
     <td>
-        <props:textProperty name="<%= BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS %>"/>
+        <props:textProperty name="<%= BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS %>" className="longField"/>
 
         <span class="smallNote">
             Specify the command line options for BrowserStack Local binary. e.g: -force -forcelocal. See <a href="https://www.browserstack.com/local-testing#modifiers" target="_blank">this link</a> to know more about these options.

@@ -18,8 +18,8 @@ import java.util.List;
 public class TeamCityBrowserStackLocal extends BrowserStackLocal {
     private final BuildProgressLogger buildLogger;
 
-    TeamCityBrowserStackLocal(String options, BuildProgressLogger buildLogger) {
-        super(options);
+    TeamCityBrowserStackLocal(String binPath, String options, BuildProgressLogger buildLogger) {
+        super(binPath, options);
         this.buildLogger = buildLogger;
     }
 
