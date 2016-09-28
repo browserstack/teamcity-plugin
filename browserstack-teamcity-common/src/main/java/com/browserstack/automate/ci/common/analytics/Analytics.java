@@ -91,9 +91,9 @@ public class Analytics {
 
     protected void attachGlobalProperties(GoogleAnalyticsRequest gaRequest) {
         gaRequest.clientId((clientId != null) ? clientId : getClientId());
-        gaRequest.applicationName(dataProvider.getApplicationVersion());
+        gaRequest.applicationName("teamcity-" + dataProvider.getApplicationVersion());
         gaRequest.applicationId(dataProvider.getPluginName());
-        gaRequest.applicationVersion(dataProvider.getPluginVersion());
+        gaRequest.applicationVersion("teamcity-plugin-" + dataProvider.getPluginVersion());
     }
 
     public void trackInstall() {
