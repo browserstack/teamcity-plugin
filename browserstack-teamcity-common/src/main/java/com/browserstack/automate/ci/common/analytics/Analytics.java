@@ -53,7 +53,7 @@ public class Analytics {
         Properties pluginProps = new Properties();
         InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(PLUGIN_PROPERTIES_FILE);
+            inputStream = getClass().getClassLoader().getResourceAsStream(PLUGIN_PROPERTIES_FILE);
             pluginProps.load(inputStream);
 
             String trackingId = pluginProps.getProperty(GOOGLE_PROPERTIES_KEY);
