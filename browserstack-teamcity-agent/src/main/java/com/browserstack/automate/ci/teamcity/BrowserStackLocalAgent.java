@@ -64,9 +64,9 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
                 config.get(BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS),
                 buildLogger);
 
-        if (config.containsKey(EnvVars.BROWSERSTACK_ACCESSKEY)) {
+        if (config.containsKey(EnvVars.BROWSERSTACK_ACCESS_KEY)) {
             Map<String, String> localOptions = new HashMap<String, String>();
-            localOptions.put("key", config.get(EnvVars.BROWSERSTACK_ACCESSKEY));
+            localOptions.put("key", config.get(EnvVars.BROWSERSTACK_ACCESS_KEY));
             buildLogger.message("Starting BrowserStack Local");
 
             try {
@@ -88,7 +88,7 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
                 runner.getBuild().stopBuild(errMessage);
             }
         } else {
-            buildLogger.message(EnvVars.BROWSERSTACK_ACCESSKEY + " not configured.");
+            buildLogger.message(EnvVars.BROWSERSTACK_ACCESS_KEY + " not configured.");
         }
     }
 
@@ -141,17 +141,17 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
      * @param config
      */
     private void exportEnvVars(final BuildRunnerContext runner, final Map<String, String> config) {
-        if (!config.containsKey(EnvVars.BROWSERSTACK_USER) || !config.containsKey(EnvVars.BROWSERSTACK_ACCESSKEY)) {
+        if (!config.containsKey(EnvVars.BROWSERSTACK_USERNAME) || !config.containsKey(EnvVars.BROWSERSTACK_ACCESS_KEY)) {
             return;
         }
 
-        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USER, config.get(EnvVars.BROWSERSTACK_USER));
-        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESSKEY, config.get(EnvVars.BROWSERSTACK_ACCESSKEY));
+        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USERNAME, config.get(EnvVars.BROWSERSTACK_USERNAME));
+        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESS_KEY, config.get(EnvVars.BROWSERSTACK_ACCESS_KEY));
         runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_LOCAL, config.get(EnvVars.BROWSERSTACK_LOCAL));
 
         BuildProgressLogger buildLogger = runner.getBuild().getBuildLogger();
-        buildLogger.message(EnvVars.BROWSERSTACK_USER + "=" + config.get(EnvVars.BROWSERSTACK_USER));
-        buildLogger.message(EnvVars.BROWSERSTACK_ACCESSKEY + "=" + config.get(EnvVars.BROWSERSTACK_ACCESSKEY));
+        buildLogger.message(EnvVars.BROWSERSTACK_USERNAME + "=" + config.get(EnvVars.BROWSERSTACK_USERNAME));
+        buildLogger.message(EnvVars.BROWSERSTACK_ACCESS_KEY + "=" + config.get(EnvVars.BROWSERSTACK_ACCESS_KEY));
         buildLogger.message(EnvVars.BROWSERSTACK_LOCAL + "=" + config.get(EnvVars.BROWSERSTACK_LOCAL));
 
         if (localIdentifier != null) {

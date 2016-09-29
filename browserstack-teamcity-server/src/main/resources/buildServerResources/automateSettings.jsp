@@ -7,26 +7,26 @@
 <%@ page import="com.browserstack.automate.ci.teamcity.BrowserStackParameters" %>
 <jsp:useBean id="propertiesBean" scope="request" type="jetbrains.buildServer.controllers.BasePropertiesBean"/>
 
-<tr id="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_USER %>.container">
-    <th><label for="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_USER %>">Username:</label></th>
+<tr id="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_USERNAME %>.container">
+    <th><label for="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_USERNAME %>">Username:</label></th>
     <td>
-        <props:textProperty name="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_USER %>"/>
+        <props:textProperty name="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_USERNAME %>"/>
 
         <span class="smallNote">
             Set your BrowserStack username. You can get it from <a href="https://www.browserstack.com/accounts/settings" target="_blank">here</a>.
         </span>
-        <span class="error" id="error_<%= BrowserStackParameters.EnvVars.BROWSERSTACK_USER %>"/>
+        <span class="error" id="error_<%= BrowserStackParameters.EnvVars.BROWSERSTACK_USERNAME %>"/>
     </td>
 </tr>
-<tr id="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESSKEY %>.container">
-    <th><label for="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESSKEY %>">Access Key:</label></th>
+<tr id="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESS_KEY %>.container">
+    <th><label for="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESS_KEY %>">Access Key:</label></th>
     <td>
-        <props:textProperty name="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESSKEY %>"/>
+        <props:textProperty name="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESS_KEY %>"/>
 
         <span class="smallNote">
             Set your BrowserStack access key. You can get it from <a href="https://www.browserstack.com/accounts/settings" target="_blank">here</a>.
         </span>
-        <span class="error" id="error_<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESSKEY %>"/>
+        <span class="error" id="error_<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESS_KEY %>"/>
     </td>
 </tr>
 <tr id="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_LOCAL %>.container">
