@@ -13,7 +13,7 @@
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <teamcity.browserstack-teamcity.plugin.version>${project.version}-RC1</teamcity.browserstack-teamcity.plugin.version>
+        <teamcity.browserstack-teamcity.plugin.version>${project.version}</teamcity.browserstack-teamcity.plugin.version>
         <teamcity.browserstack-teamcity.plugin.vendorName>BrowserStack</teamcity.browserstack-teamcity.plugin.vendorName>
         <teamcity.browserstack-teamcity.plugin.vendorUrl>https://www.browserstack.com</teamcity.browserstack-teamcity.plugin.vendorUrl>
     </properties>
