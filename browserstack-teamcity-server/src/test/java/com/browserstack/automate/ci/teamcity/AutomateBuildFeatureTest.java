@@ -89,8 +89,8 @@ public class AutomateBuildFeatureTest extends BaseJMockTestCase {
     @NotNull
     private Map<String, String> createParams() {
         Map<String, String> paramMap = new HashMap<String, String>();
-        paramMap.put(BrowserStackParameters.EnvVars.BROWSERSTACK_USER, "RandomUser");
-        paramMap.put(BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESSKEY, "RandomAccess456Key");
+        paramMap.put(BrowserStackParameters.EnvVars.BROWSERSTACK_USERNAME, "RandomUser");
+        paramMap.put(BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESS_KEY, "RandomAccess456Key");
         return paramMap;
     }
 

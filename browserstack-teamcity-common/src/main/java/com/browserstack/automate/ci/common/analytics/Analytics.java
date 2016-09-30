@@ -22,6 +22,8 @@ public class Analytics {
     protected static final String DEFAULT_CLIENT_ID = "unknown-client";
     private static final String PLUGIN_PROPERTIES_FILE = "plugin.properties";
     private static final String GOOGLE_PROPERTIES_KEY = "google.analytics.tracking.id";
+    private static final String APP_NAME_PREFIX = "teamcity-";
+    private static final String APP_VERSION_PREFIX = "teamcity-plugin-";
 
     private String clientId;
 
@@ -53,7 +55,7 @@ public class Analytics {
         Properties pluginProps = new Properties();
         InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(PLUGIN_PROPERTIES_FILE);
+            inputStream = getClass().getClassLoader().getResourceAsStream(PLUGIN_PROPERTIES_FILE);
             pluginProps.load(inputStream);
 
             String trackingId = pluginProps.getProperty(GOOGLE_PROPERTIES_KEY);
@@ -91,9 +93,9 @@ public class Analytics {
 
     protected void attachGlobalProperties(GoogleAnalyticsRequest gaRequest) {
         gaRequest.clientId((clientId != null) ? clientId : getClientId());
-        gaRequest.applicationName(dataProvider.getApplicationVersion());
+        gaRequest.applicationName(APP_NAME_PREFIX + dataProvider.getApplicationVersion());
         gaRequest.applicationId(dataProvider.getPluginName());
-        gaRequest.applicationVersion(dataProvider.getPluginVersion());
+        gaRequest.applicationVersion(APP_VERSION_PREFIX + dataProvider.getPluginVersion());
     }
 
     public void trackInstall() {

@@ -192,8 +192,8 @@ public class AutomateResultsTab extends ViewLogTab {
         SBuildFeatureDescriptor featureDescriptor = AutomateBuildFeature.findFeatureDescriptor(build);
         if (featureDescriptor != null) {
             Map<String, String> params = featureDescriptor.getParameters();
-            String username = params.get(BrowserStackParameters.EnvVars.BROWSERSTACK_USER);
-            String accessKey = params.get(BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESSKEY);
+            String username = params.get(BrowserStackParameters.EnvVars.BROWSERSTACK_USERNAME);
+            String accessKey = params.get(BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESS_KEY);
 
             if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(accessKey)) {
                 return new AutomateClient(username, accessKey);

@@ -71,8 +71,8 @@ public class AutomateBuildFeature extends BuildFeature {
     @NotNull
     @Override
     public String describeParameters(@NotNull Map<String, String> params) {
-        boolean hasCredentials = params.containsKey(EnvVars.BROWSERSTACK_USER) &&
-                params.containsKey(EnvVars.BROWSERSTACK_ACCESSKEY);
+        boolean hasCredentials = params.containsKey(EnvVars.BROWSERSTACK_USERNAME) &&
+                params.containsKey(EnvVars.BROWSERSTACK_ACCESS_KEY);
         if (!hasCredentials) {
             return "Requires configuration of credentials.";
         }
