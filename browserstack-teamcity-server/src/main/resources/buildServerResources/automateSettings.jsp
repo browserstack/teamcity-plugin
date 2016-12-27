@@ -21,7 +21,7 @@
 <tr id="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESS_KEY %>.container">
     <th><label for="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESS_KEY %>">Access Key:</label></th>
     <td>
-        <props:textProperty name="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESS_KEY %>"/>
+        <props:passwordProperty name="<%= BrowserStackParameters.EnvVars.BROWSERSTACK_ACCESS_KEY %>"/>
 
         <span class="smallNote">
             Set your BrowserStack access key. You can get it from <a href="https://www.browserstack.com/accounts/settings" target="_blank">here</a>.
