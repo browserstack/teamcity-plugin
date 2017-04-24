@@ -4,7 +4,7 @@
   <parent>
     <artifactId>browserstack-teamcity</artifactId>
     <groupId>com.browserstack</groupId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </parent>
   <artifactId>browserstack-teamcity-server</artifactId>
   <packaging>jar</packaging>
