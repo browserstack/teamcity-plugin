@@ -141,9 +141,10 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
      * @param config
      */
     private void exportEnvVars(final BuildRunnerContext runner, final Map<String, String> config) {
-        if (!config.containsKey(EnvVars.BROWSERSTACK_USERNAME) || !config.containsKey(EnvVars.BROWSERSTACK_ACCESS_KEY)) {
-            return;
+        if(!((config.containsKey(EnvVars.BROWSERSTACK_USERNAME) || config.containsKey(EnvVars.BROWSERSTACK_USER)) && (config.containsKey(EnvVars.BROWSERSTACK_ACCESS_KEY) || config.containsKey(EnvVars.BROWSERSTACK_ACCESSKEY)))) {
+          return;
         }
+
         String username = config.get(EnvVars.BROWSERSTACK_USERNAME) == null ? config.get(EnvVars.BROWSERSTACK_USER) : config.get(EnvVars.BROWSERSTACK_USERNAME);
         String accesskey = config.get(EnvVars.BROWSERSTACK_ACCESS_KEY) == null ? config.get(EnvVars.BROWSERSTACK_ACCESSKEY) : config.get(EnvVars.BROWSERSTACK_ACCESS_KEY);
         runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USERNAME, username + "-teamcity");
