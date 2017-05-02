@@ -141,12 +141,16 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
      * @param config
      */
     private void exportEnvVars(final BuildRunnerContext runner, final Map<String, String> config) {
-        if (!config.containsKey(EnvVars.BROWSERSTACK_USERNAME) || !config.containsKey(EnvVars.BROWSERSTACK_ACCESS_KEY)) {
-            return;
+        if(!((config.containsKey(EnvVars.BROWSERSTACK_USERNAME) || config.containsKey(EnvVars.BROWSERSTACK_USER)) && (config.containsKey(EnvVars.BROWSERSTACK_ACCESS_KEY) || config.containsKey(EnvVars.BROWSERSTACK_ACCESSKEY)))) {
+          return;
         }
 
-        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USERNAME, config.get(EnvVars.BROWSERSTACK_USERNAME));
-        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESS_KEY, config.get(EnvVars.BROWSERSTACK_ACCESS_KEY));
+        String username = config.get(EnvVars.BROWSERSTACK_USERNAME) == null ? config.get(EnvVars.BROWSERSTACK_USER) : config.get(EnvVars.BROWSERSTACK_USERNAME);
+        String accesskey = config.get(EnvVars.BROWSERSTACK_ACCESS_KEY) == null ? config.get(EnvVars.BROWSERSTACK_ACCESSKEY) : config.get(EnvVars.BROWSERSTACK_ACCESS_KEY);
+        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USERNAME, username + "-teamcity");
+        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USER, username + "-teamcity");
+        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESS_KEY, accesskey);
+        runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESSKEY, accesskey);
         runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_LOCAL, config.get(EnvVars.BROWSERSTACK_LOCAL));
 
         BuildProgressLogger buildLogger = runner.getBuild().getBuildLogger();
