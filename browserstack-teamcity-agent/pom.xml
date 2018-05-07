@@ -5,7 +5,7 @@
     <parent>
         <artifactId>browserstack-teamcity</artifactId>
         <groupId>com.browserstack</groupId>
-        <version>${browserstack.teamcity.version}</version>
+        <version>1.0.2</version>
     </parent>
 
     <artifactId>browserstack-teamcity-agent</artifactId>

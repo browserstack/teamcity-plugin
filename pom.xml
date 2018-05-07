@@ -6,14 +6,13 @@
 
   <groupId>com.browserstack</groupId>
   <artifactId>browserstack-teamcity</artifactId>
-  <version>${browserstack.teamcity.version}</version>
+  <version>1.0.2</version>
   <packaging>pom</packaging>
 
   <properties>
     <teamcity-version>9.0.3</teamcity-version>
     <jdk.version>1.6</jdk.version>
     <automate.client.java.version>0.3-SNAPSHOT</automate.client.java.version>
-    <browserstack.teamcity.version>2.0.0</browserstack.teamcity.version>
     <!-- This is the testing Tracking Id. If you want to build the project for production, please use the
  production profile which replaces this with the production tracking id. -->
     <google.analytics.tracking.id>UA-79358556-2</google.analytics.tracking.id>
