@@ -20,7 +20,7 @@
                     <td class="test-status" style="text-align: left; vertical-align: top">${test.getAttribute("status").getValue()}</td>
                     <td class="nameT" style="text-align: left; vertical-align: top">
                         ${test.getAttribute("package").getValue()}. ${test.getAttribute("class").getValue()}.
-                        <a class="session-link" data-session="${test.getChild("session").getText()}" href="<%= request.getAttribute("javax.servlet.forward.request_uri") %>?<%= request.getQueryString() %>&session=${test.getChild("session").getText()}">
+                        <a class="session-link" data-session="${test.getChild("session").getText()}" href="<%= request.getAttribute("javax.servlet.forward.request_uri") %>?<%= request.getQueryString() %>&session=${test.getChild("session").getText()}&projectType=${test.getChild("projectType").getText()}">
                             ${test.getAttribute("testname").getValue()}
                         </a>
                     </td>
@@ -43,7 +43,7 @@
 
     <c:if test="${not empty resultsUrl}">
         <a href="${resultsUrl}">Back to test results</a>
-        <a href="${session.browserUrl}" target="_blank" style="margin-left: 20px; float: right;">View this on BrowserStack Automate Dashboard</a><br/>
+        <a href="${session.browserUrl}" target="_blank" style="margin-left: 20px; float: right;">View this on BrowserStack Dashboard</a><br/>
     </c:if>
     <br/>
     <iframe id="automate-result" src="${session.publicUrl}" frameborder="0"></iframe>
