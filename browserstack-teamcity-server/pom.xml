@@ -6,7 +6,7 @@
   <parent>
     <artifactId>browserstack-teamcity</artifactId>
     <groupId>com.browserstack</groupId>
-    <version>1.0.2</version>
+    <version>${browserstack.teamcity.version}</version>
   </parent>
   <artifactId>browserstack-teamcity-server</artifactId>
   <packaging>jar</packaging>
