@@ -47,8 +47,8 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
   @NotNull
   private final ArtifactsWatcher artifactsWatcher;
 
-  public BrowserStackLocalAgent(@NotNull EventDispatcher<AgentLifeCycleListener> eventDispatcher,
-      @NotNull ArtifactsWatcher watcher) {
+    public BrowserStackLocalAgent(@NotNull EventDispatcher<AgentLifeCycleListener> eventDispatcher,
+                                  @NotNull ArtifactsWatcher watcher) {
     artifactsWatcher = watcher;
     eventDispatcher.addListener(this);
   }
@@ -64,9 +64,9 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
     BuildProgressLogger buildLogger = build.getBuildLogger();
     Map<String, String> config = buildFeature.getParameters();
     browserstackLocal = new TeamCityBrowserStackLocal(
-        config.get(BrowserStackParameters.BROWSERSTACK_LOCAL_PATH),
-        config.get(BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS),
-        buildLogger);
+            config.get(BrowserStackParameters.BROWSERSTACK_LOCAL_PATH),
+            config.get(BrowserStackParameters.BROWSERSTACK_LOCAL_OPTIONS),
+            buildLogger);
 
     if (config.containsKey(EnvVars.BROWSERSTACK_ACCESS_KEY)) {
       Map<String, String> localOptions = new HashMap<String, String>();
@@ -97,8 +97,7 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
   }
 
   @Override
-  public void runnerFinished(@NotNull BuildRunnerContext runner,
-      @NotNull BuildFinishedStatus status) {
+  public void runnerFinished(@NotNull BuildRunnerContext runner, @NotNull BuildFinishedStatus status) {
     AgentRunningBuild build = runner.getBuild();
     if (isEnabled) {
       killLocal(build);
@@ -108,18 +107,16 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
     // if found, artifacts are published to the artifact directory by appending "=> <path>"
     List<File> reportFiles = new ArrayList<File>();
     FileUtil.collectMatchedFiles(build.getCheckoutDirectory(),
-        Pattern.compile(FileUtil.convertAntToRegexp(REPORT_FILE_PATTERN)),
-        reportFiles);
+            Pattern.compile(FileUtil.convertAntToRegexp(REPORT_FILE_PATTERN)),
+            reportFiles);
 
     for (File reportFile : reportFiles) {
-      artifactsWatcher.addNewArtifactsPath(
-          reportFile.getAbsolutePath() + "=>" + BrowserStackParameters.ARTIFACT_DIR);
+      artifactsWatcher.addNewArtifactsPath(reportFile.getAbsolutePath() + "=>" + BrowserStackParameters.ARTIFACT_DIR);
     }
   }
 
   @Override
-  public void buildFinished(@NotNull AgentRunningBuild build,
-      @NotNull BuildFinishedStatus buildStatus) {
+  public void buildFinished(@NotNull AgentRunningBuild build, @NotNull BuildFinishedStatus buildStatus) {
     if (isEnabled) {
       killLocal(build);
     }
@@ -131,14 +128,12 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
    * @param build Current build.
    */
   private void loadBuildFeature(final AgentRunningBuild build) {
-    Collection<AgentBuildFeature> buildFeatures = build
-        .getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
+    Collection<AgentBuildFeature> buildFeatures = build.getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
     isEnabled = !buildFeatures.isEmpty();
     if (isEnabled) {
       buildFeature = buildFeatures.iterator().next();
       if (buildFeature.getParameters().containsKey(EnvVars.BROWSERSTACK_LOCAL)) {
-        isEnabled = buildFeature.getParameters().get(EnvVars.BROWSERSTACK_LOCAL)
-            .equalsIgnoreCase("true");
+        isEnabled = buildFeature.getParameters().get(EnvVars.BROWSERSTACK_LOCAL).equalsIgnoreCase("true");
       }
     }
   }
@@ -147,34 +142,24 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
    * Adds environment variables to the build environment.
    *
    * @param runner Represents current build runner.
+   * @param config
    */
   private void exportEnvVars(final BuildRunnerContext runner, final Map<String, String> config) {
-    if (!((config.containsKey(EnvVars.BROWSERSTACK_USERNAME) || config
-        .containsKey(EnvVars.BROWSERSTACK_USER)) && (
-        config.containsKey(EnvVars.BROWSERSTACK_ACCESS_KEY) || config
-            .containsKey(EnvVars.BROWSERSTACK_ACCESSKEY)))) {
+    if(!((config.containsKey(EnvVars.BROWSERSTACK_USERNAME) || config.containsKey(EnvVars.BROWSERSTACK_USER)) && (config.containsKey(EnvVars.BROWSERSTACK_ACCESS_KEY) || config.containsKey(EnvVars.BROWSERSTACK_ACCESSKEY)))) {
       return;
     }
 
-    String username =
-        config.get(EnvVars.BROWSERSTACK_USERNAME) == null ? config.get(EnvVars.BROWSERSTACK_USER)
-            : config.get(EnvVars.BROWSERSTACK_USERNAME);
-    String accesskey = config.get(EnvVars.BROWSERSTACK_ACCESS_KEY) == null ? config
-        .get(EnvVars.BROWSERSTACK_ACCESSKEY) : config.get(EnvVars.BROWSERSTACK_ACCESS_KEY);
-    runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USERNAME,
-        username + BROWSERSTACK_USERNAME_ANALYTICS_APPENDER);
-    runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USER,
-        username + BROWSERSTACK_USERNAME_ANALYTICS_APPENDER);
+    String username = config.get(EnvVars.BROWSERSTACK_USERNAME) == null ? config.get(EnvVars.BROWSERSTACK_USER) : config.get(EnvVars.BROWSERSTACK_USERNAME);
+    String accesskey = config.get(EnvVars.BROWSERSTACK_ACCESS_KEY) == null ? config.get(EnvVars.BROWSERSTACK_ACCESSKEY) : config.get(EnvVars.BROWSERSTACK_ACCESS_KEY);
+    runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USERNAME, username + BROWSERSTACK_USERNAME_ANALYTICS_APPENDER);
+    runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_USER, username + BROWSERSTACK_USERNAME_ANALYTICS_APPENDER);
     runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESS_KEY, accesskey);
     runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESSKEY, accesskey);
-    runner
-        .addEnvironmentVariable(EnvVars.BROWSERSTACK_LOCAL, config.get(EnvVars.BROWSERSTACK_LOCAL));
+    runner.addEnvironmentVariable(EnvVars.BROWSERSTACK_LOCAL, config.get(EnvVars.BROWSERSTACK_LOCAL));
 
     BuildProgressLogger buildLogger = runner.getBuild().getBuildLogger();
-    buildLogger
-        .message(EnvVars.BROWSERSTACK_USERNAME + "=" + config.get(EnvVars.BROWSERSTACK_USERNAME));
-    buildLogger.message(
-        EnvVars.BROWSERSTACK_ACCESS_KEY + "=" + config.get(EnvVars.BROWSERSTACK_ACCESS_KEY));
+    buildLogger.message(EnvVars.BROWSERSTACK_USERNAME + "=" + config.get(EnvVars.BROWSERSTACK_USERNAME));
+    buildLogger.message(EnvVars.BROWSERSTACK_ACCESS_KEY + "=" + config.get(EnvVars.BROWSERSTACK_ACCESS_KEY));
     buildLogger.message(EnvVars.BROWSERSTACK_LOCAL + "=" + config.get(EnvVars.BROWSERSTACK_LOCAL));
 
     if (localIdentifier != null) {
@@ -194,11 +179,11 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
    * @return String Unique build Id.
    */
   private static String getBuildId(final BuildRunnerContext runner) {
-    return runner.getBuild().getBuildTypeName() +
-        "-" +
-        runner.getBuild().getBuildId() +
-        "-" +
-        runner.getBuild().getBuildNumber();
+      return runner.getBuild().getBuildTypeName() +
+              "-" +
+              runner.getBuild().getBuildId() +
+              "-" +
+              runner.getBuild().getBuildNumber();
   }
 
   /**
@@ -224,8 +209,7 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
   }
 
   /**
-   * Called after agent receives start build command from the server. Setting BrowserStack username
-   * and access key in environment variables.
+   * Called after agent receives start build command from the server. Setting BrowserStack username and access key in environment variables.
    *
    * @param runningBuild Represents running build on the agent side.
    */
@@ -233,17 +217,13 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
   public void buildStarted(@NotNull AgentRunningBuild runningBuild) {
 
     // Get browserstack build features.
-    Collection<AgentBuildFeature> buildFeatures = runningBuild
-        .getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
+    Collection<AgentBuildFeature> buildFeatures = runningBuild.getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
     AgentBuildFeature buildFeature = buildFeatures.iterator().next();
     Map<String, String> configParameters = buildFeature.getParameters();
 
     // Set BrowserStack environment variables
-    runningBuild.addSharedEnvironmentVariable(EnvVars.BROWSERSTACK_USERNAME,
-        getConfigParameter(configParameters, EnvVars.BROWSERSTACK_USERNAME)
-            + BROWSERSTACK_USERNAME_ANALYTICS_APPENDER);
-    runningBuild.addSharedEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESS_KEY,
-        getConfigParameter(configParameters, EnvVars.BROWSERSTACK_ACCESS_KEY));
+    runningBuild.addSharedEnvironmentVariable(EnvVars.BROWSERSTACK_USERNAME, getConfigParameter(configParameters, EnvVars.BROWSERSTACK_USERNAME) + BROWSERSTACK_USERNAME_ANALYTICS_APPENDER);
+    runningBuild.addSharedEnvironmentVariable(EnvVars.BROWSERSTACK_ACCESS_KEY, getConfigParameter(configParameters, EnvVars.BROWSERSTACK_ACCESS_KEY));
   }
 
   /**

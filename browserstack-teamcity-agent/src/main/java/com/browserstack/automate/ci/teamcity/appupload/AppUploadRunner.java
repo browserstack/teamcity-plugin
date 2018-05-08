@@ -18,8 +18,7 @@ public class AppUploadRunner implements AgentBuildRunner, AgentBuildRunnerInfo {
 
   @NotNull
   @Override
-  public BuildProcess createBuildProcess(@NotNull AgentRunningBuild agentRunningBuild,
-      @NotNull BuildRunnerContext buildRunnerContext) throws RunBuildException {
+  public BuildProcess createBuildProcess(@NotNull AgentRunningBuild agentRunningBuild, @NotNull BuildRunnerContext buildRunnerContext) throws RunBuildException {
     return new AppUploadBuildProcess(agentRunningBuild, buildRunnerContext);
   }
 

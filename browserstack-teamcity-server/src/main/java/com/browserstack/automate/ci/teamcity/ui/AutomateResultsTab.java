@@ -42,8 +42,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Controller for the "BrowserStack" tab displayed in the UI with test results. This handles both
- * views: the list of test cases and the iframe for a single test.
+ * Controller for the "BrowserStack" tab displayed in the UI with test results.
+ * This handles both views: the list of test cases and the iframe for a single test.
  *
  * @author Shirish Kamath
  * @author Anirudha Khanna
@@ -74,8 +74,7 @@ public class AutomateResultsTab extends ViewLogTab {
   }
 
   @Override
-  protected void fillModel(@NotNull Map<String, Object> model, @NotNull HttpServletRequest request,
-      @NotNull SBuild build) {
+  protected void fillModel(@NotNull Map<String, Object> model, @NotNull HttpServletRequest request, @NotNull SBuild build) {
     String sessionId = request.getParameter("session");
     String projectType = request
         .getParameter("projectType"); // Either null, or AUTOMATE or APP_AUTOMATE.
@@ -107,9 +106,8 @@ public class AutomateResultsTab extends ViewLogTab {
 
     List<File> reportFiles = new ArrayList<File>();
     FileUtil.collectMatchedFiles(build.getArtifactsDirectory(),
-        Pattern
-            .compile(FileUtil.convertAntToRegexp(BrowserStackParameters.ARTIFACT_LOCATION_PATTERN)),
-        reportFiles);
+            Pattern.compile(FileUtil.convertAntToRegexp(BrowserStackParameters.ARTIFACT_LOCATION_PATTERN)),
+            reportFiles);
 
     Loggers.SERVER.info("AutomateResultsTab.isAvailable: done: " + !reportFiles.isEmpty());
     return !reportFiles.isEmpty();
@@ -131,8 +129,7 @@ public class AutomateResultsTab extends ViewLogTab {
 
         String resultsUrl = request.getRequestURI();
         if (resultsUrl != null) {
-          resultsUrl +=
-              "?" + PATTERN_PARAM_SESSION.matcher(request.getQueryString()).replaceAll("");
+          resultsUrl += "?" + PATTERN_PARAM_SESSION.matcher(request.getQueryString()).replaceAll("");
           model.put("resultsUrl", resultsUrl);
           Loggers.SERVER.info("Session fetch resultsUrl: " + resultsUrl);
         }
@@ -156,10 +153,8 @@ public class AutomateResultsTab extends ViewLogTab {
     }
 
     BuildArtifacts buildArtifacts = build.getArtifacts(BuildArtifactsViewMode.VIEW_HIDDEN_ONLY);
-    BuildStatistics buildStatistics = build
-        .getBuildStatistics(BuildStatisticsOptions.ALL_TESTS_NO_DETAILS);
-    final Map<String, STestRun> testResultMap = ParserUtil
-        .processTestResults(buildStatistics.getAllTests());
+    BuildStatistics buildStatistics = build.getBuildStatistics(BuildStatisticsOptions.ALL_TESTS_NO_DETAILS);
+    final Map<String, STestRun> testResultMap = ParserUtil.processTestResults(buildStatistics.getAllTests());
 
     final List<Element> testResults = new ArrayList<Element>();
     buildArtifacts.iterateArtifacts(new BuildArtifacts.BuildArtifactsProcessor() {
@@ -167,8 +162,7 @@ public class AutomateResultsTab extends ViewLogTab {
       @Override
       public Continuation processBuildArtifact(@NotNull BuildArtifact artifact) {
         // TODO: Fix logic of picking up files as artifacts
-        if (artifact.isFile() && artifact.getRelativePath()
-            .contains(BrowserStackParameters.BROWSERSTACK_ARTIFACT_DIR)) {
+        if (artifact.isFile() && artifact.getRelativePath().contains(BrowserStackParameters.BROWSERSTACK_ARTIFACT_DIR)) {
           InputStream inputStream = null;
 
           try {
@@ -184,8 +178,7 @@ public class AutomateResultsTab extends ViewLogTab {
                   elem.setAttribute("status", testRun.getStatusText());
 
                   // Use test name as recorded by Teamcity's result parser
-                  elem.setAttribute("testname",
-                      testRun.getTest().getName().getTestNameWithParameters());
+                  elem.setAttribute("testname", testRun.getTest().getName().getTestNameWithParameters());
                   testResults.add(elem);
                 }
               }

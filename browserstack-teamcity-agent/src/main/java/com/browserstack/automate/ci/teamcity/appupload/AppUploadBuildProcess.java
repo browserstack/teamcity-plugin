@@ -32,8 +32,7 @@ public class AppUploadBuildProcess implements BuildProcess {
   private boolean hasFinished = false;
   private boolean isInterrupted = false;
 
-  public AppUploadBuildProcess(@NotNull AgentRunningBuild agentRunningBuild,
-      @NotNull BuildRunnerContext buildRunnerContext) {
+  public AppUploadBuildProcess(@NotNull AgentRunningBuild agentRunningBuild, @NotNull BuildRunnerContext buildRunnerContext) {
     this.agentRunningBuild = agentRunningBuild;
     this.buildRunnerContext = buildRunnerContext;
     this.logger = agentRunningBuild.getBuildLogger();
@@ -50,8 +49,7 @@ public class AppUploadBuildProcess implements BuildProcess {
 
     logger.progressMessage("Uploading app " + buildFilePath + " to Browserstack.");
 
-    Collection<AgentBuildFeature> buildFeatures = agentRunningBuild
-        .getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
+    Collection<AgentBuildFeature> buildFeatures = agentRunningBuild.getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
     AgentBuildFeature buildFeature = buildFeatures.iterator().next();
     Map<String, String> map = buildFeature.getParameters();
 
@@ -72,14 +70,9 @@ public class AppUploadBuildProcess implements BuildProcess {
     try {
       // Upload app file to BrowserStack
       AppUploadResponse appUploadResponse = appAutomateClient.uploadApp(buildFilePath);
-      logger.progressMessage(
-          buildFilePath + " uploaded successfully to Browserstack with app_url : "
-              + appUploadResponse.getAppUrl());
-      agentRunningBuild
-          .addSharedEnvironmentVariable(EnvVars.BROWSERSTACK_APP_ID, appUploadResponse.getAppUrl());
-      logger.progressMessage(
-          "Environment variable BROWSERSTACK_APP_ID set with value : " + appUploadResponse
-              .getAppUrl());
+      logger.progressMessage(buildFilePath + " uploaded successfully to Browserstack with app_url : " + appUploadResponse.getAppUrl());
+      agentRunningBuild.addSharedEnvironmentVariable(EnvVars.BROWSERSTACK_APP_ID, appUploadResponse.getAppUrl());
+      logger.progressMessage("Environment variable BROWSERSTACK_APP_ID set with value : " + appUploadResponse.getAppUrl());
 
       // Mark build process to be successfully finished.
       hasFinished = true;

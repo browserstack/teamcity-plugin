@@ -30,18 +30,15 @@ public class BrowserStackParameters {
 
   public static final String AUTOMATE_NAMESPACE = "automate-results";
 
-  public static final String SESSIONS_CONTROLLER_PATH =
-      "/" + BrowserStackParameters.AUTOMATE_NAMESPACE + "/sessions.html";
+  public static final String SESSIONS_CONTROLLER_PATH = "/" + BrowserStackParameters.AUTOMATE_NAMESPACE + "/sessions.html";
 
   public static final String BROWSERSTACK_ARTIFACT_DIR = ".browserstack";
 
   public static final String BROWSERSTACK_REPORT_PATTERN = "REPORT-*.xml";
 
-  public static final String ARTIFACT_LOCATION_PATTERN =
-      "**" + File.separator + ".browserstack" + File.separator;
+  public static final String ARTIFACT_LOCATION_PATTERN = "**" + File.separator + ".browserstack" + File.separator;
 
-  public static final String ARTIFACT_DIR =
-      ".teamcity" + File.separator + BROWSERSTACK_ARTIFACT_DIR + File.separator;
+  public static final String ARTIFACT_DIR = ".teamcity" + File.separator + BROWSERSTACK_ARTIFACT_DIR + File.separator;
 
   private BrowserStackParameters() {
   }

@@ -23,20 +23,16 @@ public class AppUploadPropertiesProcessor implements PropertiesProcessor {
     String filePath = properties.get(BrowserStackParameters.UploadRunner.FILE_PATH).trim();
 
     if (PropertiesUtil.isEmptyOrNull(filePath)) {
-      result.add(new InvalidProperty(BrowserStackParameters.UploadRunner.FILE_PATH,
-          UploadRunner.FILE_PATH_EMPTY_ERROR_MSG));
+      result.add(new InvalidProperty(BrowserStackParameters.UploadRunner.FILE_PATH, UploadRunner.FILE_PATH_EMPTY_ERROR_MSG));
     }
 
     if (!(filePath.endsWith(".apk") || filePath.endsWith(".ipa"))) {
-      result.add(new InvalidProperty(BrowserStackParameters.UploadRunner.FILE_PATH,
-          UploadRunner.INVALID_FILE_EXTENSION_ERROR_MSG));
+      result.add(new InvalidProperty(BrowserStackParameters.UploadRunner.FILE_PATH, UploadRunner.INVALID_FILE_EXTENSION_ERROR_MSG));
     }
 
     File file = new File(filePath);
     if (!file.exists()) {
-      result.add(
-          new InvalidProperty(BrowserStackParameters.UploadRunner.FILE_PATH,
-              UploadRunner.FILE_NOT_FOUND_ERROR_MSG));
+      result.add(new InvalidProperty(BrowserStackParameters.UploadRunner.FILE_PATH, UploadRunner.FILE_NOT_FOUND_ERROR_MSG));
     }
 
     return result;
