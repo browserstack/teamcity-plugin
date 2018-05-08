@@ -76,8 +76,7 @@ public class AutomateResultsTab extends ViewLogTab {
   @Override
   protected void fillModel(@NotNull Map<String, Object> model, @NotNull HttpServletRequest request, @NotNull SBuild build) {
     String sessionId = request.getParameter("session");
-    String projectType = request
-        .getParameter("projectType"); // Either null, or AUTOMATE or APP_AUTOMATE.
+    String projectType = request.getParameter("projectType"); // Either null, or AUTOMATE or APP_AUTOMATE.
 
     // This is for backward compatibility, as earlier only AUTOMATE was supported.
     if (StringUtils.isBlank(projectType)) {
