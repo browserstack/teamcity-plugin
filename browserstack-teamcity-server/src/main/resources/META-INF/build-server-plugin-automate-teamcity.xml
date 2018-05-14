@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
-       default-autowire="constructor">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+  default-autowire="constructor">
 
-    <bean id="AutomateBuildFeature" class="com.browserstack.automate.ci.teamcity.config.AutomateBuildFeature"/>
-    <bean id="AutomateResultsTab" class="com.browserstack.automate.ci.teamcity.ui.AutomateResultsTab"/>
-    <bean id="AutomateSessionLink" class="com.browserstack.automate.ci.teamcity.ui.AutomateSessionLink"/>
-    <bean id="AutomateSessionController" class="com.browserstack.automate.ci.teamcity.analytics.AutomateSessionController"/>
+  <bean id="AutomateBuildFeature"
+    class="com.browserstack.automate.ci.teamcity.config.AutomateBuildFeature"/>
+  <bean id="AutomateResultsTab"
+    class="com.browserstack.automate.ci.teamcity.ui.AutomateResultsTab"/>
+  <bean id="AutomateSessionLink"
+    class="com.browserstack.automate.ci.teamcity.ui.AutomateSessionLink"/>
+  <bean id="AutomateSessionController"
+    class="com.browserstack.automate.ci.teamcity.analytics.AutomateSessionController"/>
+  <bean id="AppUploadRunType" class="com.browserstack.automate.ci.teamcity.ui.AppUploadRunType"/>
 </beans>
