@@ -218,6 +218,7 @@ public class BrowserStackLocalAgent extends AgentLifeCycleAdapter {
 
     // Get browserstack build features.
     Collection<AgentBuildFeature> buildFeatures = runningBuild.getBuildFeaturesOfType(BrowserStackParameters.BUILD_FEATURE_TYPE);
+    if (buildFeatures.isEmpty()) return;
     AgentBuildFeature buildFeature = buildFeatures.iterator().next();
     Map<String, String> configParameters = buildFeature.getParameters();
 
